@@ -25,7 +25,7 @@ const RoutesWeb = () => {
       <>
       {/* {loading && <Loader />} */}
       <Routes>
-        <Route path="/" element={<Hello />} />
+        <Route path="/" element={<Hello/>} />
         <Route path="/bye" element={<Bye />} />
         <Route path="/players" element={<Players />} />
       </Routes>
