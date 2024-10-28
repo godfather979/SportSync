@@ -1,6 +1,7 @@
 import './App.css';
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import Hello from './components/Hello';
+
+import HomePage from './components/HomePage';
 import Bye from './components/Bye';
 import Players from './components/Players';
 
@@ -25,7 +26,7 @@ const RoutesWeb = () => {
       <>
       {/* {loading && <Loader />} */}
       <Routes>
-        <Route path="/" element={<Hello/>} />
+        <Route path="/" element={<HomePage/>} />
         <Route path="/bye" element={<Bye />} />
         <Route path="/players" element={<Players />} />
       </Routes>

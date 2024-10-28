@@ -1,18 +1,44 @@
 import { useEffect, useState } from "react";
 import moment from "moment";
+import { PlayerForm } from './PlayerForm';
 
 
 function Players() {
 
     const[data,setData] = useState([]);
+    const [editingPlayer, setEditingPlayer] = useState(null);   // Track the player being edited
+    const [isFormVisible, setIsFormVisible] = useState(false);  // Toggle form visibility
 
-    useEffect (()=> {
-        fetch('http://localhost:5000/Players')
-        .then(res => res.json())
-        .then(data => setData(data))
-        .catch(err => console.log(err));
+    useEffect(() => {
+      fetchPlayers();
+  }, []);
 
-    }, [])
+  const fetchPlayers = async () => {
+      try {
+          const res = await fetch('http://localhost:5000/Players');
+          const players = await res.json();
+          setData(players);
+      } catch (err) {
+          console.error("Error fetching players:", err);
+      }
+  };
+
+    const handleEdit = (player) => {
+      setEditingPlayer(player); // Set the player to be edited
+      setIsFormVisible(true); // Show the form for editing
+  };
+
+    const handleClose = () => {
+    setIsFormVisible(false); // Hide the form
+    setEditingPlayer(null); // Clear the editing player state
+  };
+
+  const handleFormSubmit = async () => {
+    await fetchPlayers(); // Refresh player list after editing
+    handleClose(); // Close the form
+  };
+
+
     
     
     return (
@@ -39,6 +65,9 @@ function Players() {
             <td>{d.name}</td>
             <td>{d.sport}</td>
             <td>{moment(d.dob).format("DD/MM/YYYY")}</td>
+            <td>
+            <button className = "text-white text-center" onClick={() => handleEdit(d)}>Edit</button>
+            </td>
             
         </tr>
 
@@ -47,6 +76,15 @@ function Players() {
     </tbody>
   </table>
 </div>
+
+{/* Render PlayerForm for editing */}
+{isFormVisible && (
+                <PlayerForm
+                    player={editingPlayer} // Pass the player to be edited
+                    onClose={handleClose}
+                    onSubmit={handleFormSubmit}
+                />
+            )}
 </div>
         </>
         

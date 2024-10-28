@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 
-export function PlayerForm({ onClose, onSubmit }) {
+export function PlayerForm({ onClose, onSubmit, player = {} }) {
     const [playerData, setPlayerData] = useState({
-        player_id: '',
-        name: '',
-        sport: '',
-        dob: '',
+        player_id: player.player_id || '',
+        name: player.name || '',
+        sport: player.sport || '',
+        dob: player.dob ? moment(player.dob).format('YYYY-MM-DD') : ''
     });
+    
 
     const [error, setError] = useState('');
-
-    const [isFormVisible, setIsFormVisible] = useState(true);
+    const isEditMode = Boolean(player.player_id); // Check if it's edit mode
 
     const handleChange = (e) => {
         setPlayerData({ ...playerData, [e.target.name]: e.target.value });
@@ -19,37 +20,42 @@ export function PlayerForm({ onClose, onSubmit }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        console.log("Submitting player data:", playerData); // Log player data
+        console.log(`${isEditMode ? 'Updating' : 'Adding'} player data:`, playerData);
+
         try {
-            const response = await fetch('http://localhost:5000/Players', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(playerData),
-            });
+            const response = await fetch(
+                `http://localhost:5000/Players${isEditMode ? `/${player.player_id}` : ''}`,
+                {
+                    method: isEditMode ? 'PUT' : 'POST', // Use PUT for edit, POST for new player
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(playerData),
+                }
+            );
 
             const result = await response.json();
-    
+
             if (!response.ok) {
-                // Handle error and set meaningful error message
-                const errorMsg = result.error || 'Failed to add player';
+                const errorMsg = result.error || 'Failed to save player data';
                 throw new Error(errorMsg);
-              }
-          
-              console.log('Player added successfully:', result);
-              // Reset form or take further action on success
-              setPlayerData({ player_id: '', name: '', sport: '', dob: '' });
-            } catch (err) {
-              console.error('Error:', err); // Log the full error object
-              setError(err.message || 'An unexpected error occurred'); // Set error message for display
             }
-          };
+
+            console.log(`${isEditMode ? 'Player updated' : 'Player added'} successfully:`, result);
+            setPlayerData({ player_id: '', name: '', sport: '', dob: '' }); // Reset form on success
+            onSubmit(); // Notify parent component of success
+        } catch (err) {
+            console.error('Error:', err); // Log the full error object
+            setError(err.message || 'An unexpected error occurred');
+        }
+    };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="w-[375px] h-[400px] bg-gray-50 rounded-tl-[35px] rounded-tr-[35px] p-6 relative">
-                <h2 className="text-xl font-bold mb-4">Add New Player</h2>
+                <h2 className="text-xl font-bold mb-4">
+                    {isEditMode ? 'Edit Player' : 'Add New Player'}
+                </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <input
                         type="text"
@@ -59,6 +65,7 @@ export function PlayerForm({ onClose, onSubmit }) {
                         value={playerData.player_id}
                         onChange={handleChange}
                         required
+                        disabled={isEditMode} // Disable ID input for edit mode
                     />
                     <input
                         type="text"
@@ -89,7 +96,6 @@ export function PlayerForm({ onClose, onSubmit }) {
 
                     {error && <div className="text-red-500">{error}</div>} {/* Display error message */}
 
-
                     <div className="flex justify-end space-x-2 mt-4">
                         <button
                             type="button"
@@ -99,7 +105,7 @@ export function PlayerForm({ onClose, onSubmit }) {
                             Cancel
                         </button>
                         <button type="submit" className="btn btn-primary">
-                            Save
+                            {isEditMode ? 'Update' : 'Save'}
                         </button>
                     </div>
                 </form>

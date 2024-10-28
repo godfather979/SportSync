@@ -5,7 +5,7 @@ import { PlayerForm } from './PlayerForm';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export function Hello() {
+export function HomePage() {
 
 
   const navigate = useNavigate();
@@ -149,4 +149,4 @@ export function Hello() {
   );
 }
 
-export default Hello;
+export default HomePage;

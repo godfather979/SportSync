@@ -18,6 +18,8 @@ app.get('/',(req,res) => {
 
 })
 
+
+//route to get players
 app.get('/Players', (req,res) =>{
     const sql = "select* from Players";
     db.query(sql, (err,data) =>{
@@ -28,6 +30,7 @@ app.get('/Players', (req,res) =>{
     })
 })
 
+//route to add players
 app.post('/Players', (req, res) => {
     console.log("Received body:", req.body); // Check incoming data
     const { player_id, name, sport, dob } = req.body;
@@ -45,8 +48,30 @@ app.post('/Players', (req, res) => {
               return res.status(500).json({ error: 'Failed to add player' });
             }
             return res.status(201).json({ message: 'Player added successfully', data });
-          });
-        });
+    });
+});
+
+//route to update players
+app.put('/Players/:id', (req, res) => {
+    console.log("Received body for update:", req.body); // Check incoming data
+    const { name, sport, dob } = req.body;
+    const { id: player_id } = req.params; // Extract player ID from URL
+
+    const sql = "UPDATE Players SET name = ?, sport = ?, dob = ? WHERE player_id = ?";
+    
+    db.query(sql, [name, sport, dob, player_id], (err, data) => {
+        if (err) {
+            console.error("Error updating player:", err.message);
+            return res.status(500).json({ error: 'Failed to update player' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Player not found' });
+        }
+
+        return res.status(200).json({ message: 'Player updated successfully' });
+    });
+});
 
 
 app.listen(5000, () => {
