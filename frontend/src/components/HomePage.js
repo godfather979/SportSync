@@ -1,7 +1,7 @@
 "use client";
 import { TypewriterEffect } from "./ui/typewriter-effect";
 import { motion } from 'framer-motion';
-import { PlayerForm } from './PlayerForm';
+import { PlayerForm } from './Player/PlayerForm';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -54,7 +54,7 @@ export function HomePage() {
   };
 
   const handleViewTables = () => {
-    navigate('/Players');
+    navigate('/table/players');
   };
 
   return (

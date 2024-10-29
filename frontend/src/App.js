@@ -3,8 +3,9 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
 import HomePage from './components/HomePage';
 import Bye from './components/Bye';
-import Players from './components/Players';
+import Players from './components/Player/Players';
 import { SearchTable } from './components/SearchTable';
+import Fans from './components/Fan/Fans';
 
 
 function App() {
@@ -37,7 +38,7 @@ const RoutesWeb = () => {
         <Route path="/table/coaches" element={<Players />} />
         <Route path="/table/doctors" element={<Players />} />
         <Route path="/table/events" element={<Players />} />
-        <Route path="/table/fans" element={<Players />} />
+        <Route path="/table/fans" element={<Fans />} />
         <Route path="/table/institutes" element={<Players />} />
         <Route path="/table/managers" element={<Players />} />
         <Route path="/table/media_broadcasters" element={<Players />} />
