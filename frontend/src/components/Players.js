@@ -98,10 +98,10 @@ function Players() {
                       className="hover:bg-gray-200 transition-colors border-b border-gray-200"
                     >
                       <td className="px-4 py-3 text-gray-600">{player.player_id}</td>
-                      <td className="px-4 py-3 font-medium text-gray-800">{player.name}</td>
+                      <td className="px-4 py-3 font-medium text-gray-800">{player.first_name} {player.last_name}</td>
                       <td className="px-4 py-3 text-gray-600">{player.sport}</td>
                       <td className="px-4 py-3 text-gray-600">
-                        {moment(player.dob).format("DD/MM/YYYY")}
+                        {moment(player.date_of_birth).format("DD/MM/YYYY")}
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex space-x-2">

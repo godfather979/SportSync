@@ -4,9 +4,10 @@ import moment from 'moment';
 export function PlayerForm({ onClose, onSubmit, player = {} }) {
     const [playerData, setPlayerData] = useState({
         player_id: player?.player_id || '', // Use optional chaining
-        name: player?.name || '',
+        first_name: player?.first_name || '',
+        last_name: player?.last_name || '',
         sport: player?.sport || '',
-        dob: player?.dob ? moment(player.dob).format('YYYY-MM-DD') : ''
+        date_of_birth: player?.date_of_birth ? moment(player.date_of_birth).format('YYYY-MM-DD') : ''
     });
 
     const [error, setError] = useState('');
@@ -41,7 +42,7 @@ export function PlayerForm({ onClose, onSubmit, player = {} }) {
             }
 
             console.log(`${isEditMode ? 'Player updated' : 'Player added'} successfully:`, result);
-            setPlayerData({ player_id: '', name: '', sport: '', dob: '' }); // Reset form on success
+            setPlayerData({ player_id: '', first_name: '', last_name: '', sport: '', dob: '' }); // Reset form on success
             onSubmit(); // Notify parent component of success
         } catch (err) {
             console.error('Error:', err); // Log the full error object
@@ -56,7 +57,7 @@ export function PlayerForm({ onClose, onSubmit, player = {} }) {
                     {isEditMode ? 'Edit Player' : 'Add New Player'}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <input
+                    {/* <input
                         type="text"
                         name="player_id"
                         placeholder="Player ID"
@@ -65,13 +66,22 @@ export function PlayerForm({ onClose, onSubmit, player = {} }) {
                         onChange={handleChange}
                         required
                         disabled={isEditMode} // Disable ID input for edit mode
+                    /> */}
+                    <input
+                        type="text"
+                        name="first_name"
+                        placeholder="First Name"
+                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
+                        value={playerData.first_name}
+                        onChange={handleChange}
+                        required
                     />
                     <input
                         type="text"
-                        name="name"
-                        placeholder="Player Name"
+                        name="last_name"
+                        placeholder="Last Name"
                         className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={playerData.name}
+                        value={playerData.last_name}
                         onChange={handleChange}
                         required
                     />
@@ -86,9 +96,9 @@ export function PlayerForm({ onClose, onSubmit, player = {} }) {
                     />
                     <input
                         type="date"
-                        name="dob"
+                        name="date_of_birth"
                         className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={playerData.dob}
+                        value={playerData.date_of_birth}
                         onChange={handleChange}
                         required
                     />
