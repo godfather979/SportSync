@@ -1,6 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Prociono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+
+
 @font-face {
   font-family: 'Blackjack';
   src: url('./fonts/Sacramento-Regular.ttf') format('truetype');
+}
+body {
+  background-color: white; /* Set the global background to white */
+  margin: 0; /* Remove default margin to prevent white space */
+  color: black; /* Ensure text color is visible on white background */
+}
+.prociono-regular {
+  font-family: "Prociono", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.poppins-regular {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0) grayscale(100%) brightness(0);
 }
 
 @tailwind base;

@@ -10,8 +10,8 @@ export function HomePage() {
 
   const navigate = useNavigate();
   const words = [
-    { text: "Welcome" },
-    { text: "To" },
+    { text: "Welcome", className: "text-black dark:text-black font-prociono-regular" },
+    { text: "To" , className: "text-black dark:text-black font-prociono-regular"},
     { text: "SportSync", className: "text-blue-500 dark:text-blue-500 font-prociono-regular" },
   ];
 

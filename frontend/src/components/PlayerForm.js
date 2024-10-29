@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
 
 export function PlayerForm({ onClose, onSubmit, player = {} }) {
     const [playerData, setPlayerData] = useState({
-        player_id: player.player_id || '',
-        name: player.name || '',
-        sport: player.sport || '',
-        dob: player.dob ? moment(player.dob).format('YYYY-MM-DD') : ''
+        player_id: player?.player_id || '', // Use optional chaining
+        name: player?.name || '',
+        sport: player?.sport || '',
+        dob: player?.dob ? moment(player.dob).format('YYYY-MM-DD') : ''
     });
-    
 
     const [error, setError] = useState('');
-    const isEditMode = Boolean(player.player_id); // Check if it's edit mode
+    const isEditMode = Boolean(player?.player_id); // Use optional chaining
 
     const handleChange = (e) => {
         setPlayerData({ ...playerData, [e.target.name]: e.target.value });
@@ -51,7 +50,7 @@ export function PlayerForm({ onClose, onSubmit, player = {} }) {
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-slate-400 bg-opacity-50">
             <div className="w-[375px] h-[400px] bg-gray-50 rounded-tl-[35px] rounded-tr-[35px] p-6 relative">
                 <h2 className="text-xl font-bold mb-4">
                     {isEditMode ? 'Edit Player' : 'Add New Player'}
@@ -61,7 +60,7 @@ export function PlayerForm({ onClose, onSubmit, player = {} }) {
                         type="text"
                         name="player_id"
                         placeholder="Player ID"
-                        className="w-full p-2 rounded-md border border-gray-300"
+                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
                         value={playerData.player_id}
                         onChange={handleChange}
                         required
@@ -71,7 +70,7 @@ export function PlayerForm({ onClose, onSubmit, player = {} }) {
                         type="text"
                         name="name"
                         placeholder="Player Name"
-                        className="w-full p-2 rounded-md border border-gray-300"
+                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
                         value={playerData.name}
                         onChange={handleChange}
                         required
@@ -80,7 +79,7 @@ export function PlayerForm({ onClose, onSubmit, player = {} }) {
                         type="text"
                         name="sport"
                         placeholder="Sport Played"
-                        className="w-full p-2 rounded-md border border-gray-300"
+                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
                         value={playerData.sport}
                         onChange={handleChange}
                         required
@@ -88,7 +87,7 @@ export function PlayerForm({ onClose, onSubmit, player = {} }) {
                     <input
                         type="date"
                         name="dob"
-                        className="w-full p-2 rounded-md border border-gray-300"
+                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
                         value={playerData.dob}
                         onChange={handleChange}
                         required

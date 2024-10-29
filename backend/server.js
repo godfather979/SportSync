@@ -73,6 +73,26 @@ app.put('/Players/:id', (req, res) => {
     });
 });
 
+//route to delete players
+app.delete('/Players/:id', (req, res) => {
+    const { id: player_id } = req.params; // Extract player ID from URL
+
+    const sql = "DELETE FROM Players WHERE player_id = ?";
+
+    db.query(sql, [player_id], (err, data) => {
+        if (err) {
+            console.error("Error deleting player:", err.message);
+            return res.status(500).json({ error: 'Failed to delete player' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Player not found' });
+        }
+
+        return res.status(200).json({ message: 'Player deleted successfully' });
+    });
+});
+
 
 app.listen(5000, () => {
     console.log("Listening on port 5000");
