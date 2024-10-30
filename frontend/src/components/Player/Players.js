@@ -88,6 +88,7 @@ function Players() {
                     <th className="text-primary font-semibold px-4 py-3">Name</th>
                     <th className="text-primary font-semibold px-4 py-3">Sport</th>
                     <th className="text-primary font-semibold px-4 py-3">Date of Birth</th>
+                    <th className="text-primary font-semibold px-4 py-3">Age</th>
                     <th className="text-primary font-semibold px-4 py-3">Actions</th>
                   </tr>
                 </thead>
@@ -103,6 +104,7 @@ function Players() {
                       <td className="px-4 py-3 text-gray-600">
                         {moment(player.date_of_birth).format("DD/MM/YYYY")}
                       </td>
+                      <td className="px-4 py-3 text-gray-600">{player.age}</td>
                       <td className="px-4 py-3">
                         <div className="flex space-x-2">
                           <button

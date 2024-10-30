@@ -32,7 +32,7 @@ app.get('/Tables', (req,res) =>{
 
 //route to get players
 app.get('/Players', (req,res) =>{
-    const sql = "select* from Players";
+    const sql = "select* from PlayerView";
     db.query(sql, (err,data) =>{
         if(err)
             return res.json(err);
