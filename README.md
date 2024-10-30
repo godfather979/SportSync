@@ -1,0 +1,1 @@
+<p align="left">This is an Athlete management website where users can view and manage information about players, coaches, doctors, referees, and more. The platform will allow CRUD operations (Create, Read, Update, Delete) on these entities, with Node.js handling backend operations </p>
