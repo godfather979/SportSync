@@ -6,6 +6,9 @@ import Bye from './components/Bye';
 import Players from './components/Player/Players';
 import { SearchTable } from './components/SearchTable';
 import Fans from './components/Fan/Fans';
+import Coaches from './components/Coaches/Coaches';
+import Doctors from './components/Doctors/Doctors';
+import Events from './components/Events/Events';
 
 
 function App() {
@@ -35,9 +38,9 @@ const RoutesWeb = () => {
         <Route path="/" element={<HomePage/>} />
         <Route path="/bye" element={<Bye />} />
         <Route path="/table/players" element={<Players />} />
-        <Route path="/table/coaches" element={<Players />} />
-        <Route path="/table/doctors" element={<Players />} />
-        <Route path="/table/events" element={<Players />} />
+        <Route path="/table/coaches" element={<Coaches />} />
+        <Route path="/table/doctors" element={<Doctors />} />
+        <Route path="/table/events" element={<Events />} />
         <Route path="/table/fans" element={<Fans />} />
         <Route path="/table/institutes" element={<Players />} />
         <Route path="/table/managers" element={<Players />} />

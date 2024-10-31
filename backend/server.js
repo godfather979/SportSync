@@ -178,6 +178,217 @@ app.delete('/Fans/:id', (req, res) => {
         return res.status(200).json({ message: 'Fan deleted successfully' });
     });
 });
+// Route to get all coaches
+app.get('/Coaches', (req, res) => {
+    const sql = "SELECT * FROM Coaches";
+    db.query(sql, (err, data) => {
+        if (err) {
+            console.error("Error fetching coaches:", err.message);
+            return res.status(500).json({ error: 'Failed to fetch coaches' });
+        }
+        return res.status(200).json(data);
+    });
+});
+
+// Route to add a new coach
+app.post('/Coaches', (req, res) => {
+    console.log("Received body:", req.body); // Check incoming data
+    const { first_name, last_name, experience, sport } = req.body;
+
+    const sql = "INSERT INTO Coaches (first_name, last_name, experience, sport) VALUES (?, ?, ?, ?)";
+    db.query(sql, [first_name, last_name, experience, sport], (err, data) => {
+        if (err) {
+            console.error("Error inserting coach:", err.message);
+            if (err.code === 'ER_DUP_ENTRY') {
+                return res.status(409).json({ error: 'Duplicate entry for coach_id' });
+            }
+            return res.status(500).json({ error: 'Failed to add coach' });
+        }
+        return res.status(201).json({ message: 'Coach added successfully', data });
+    });
+});
+
+// Route to update a coach
+app.put('/Coaches/:id', (req, res) => {
+    console.log("Received body for update:", req.body); // Check incoming data
+    const { first_name, last_name, experience, sport } = req.body;
+    const { id: coach_id } = req.params; // Extract coach ID from URL
+
+    const sql = "UPDATE Coaches SET first_name = ?, last_name = ?, experience = ?, sport = ? WHERE coach_id = ?";
+    
+    db.query(sql, [first_name, last_name, experience, sport, coach_id], (err, data) => {
+        if (err) {
+            console.error("Error updating coach:", err.message);
+            return res.status(500).json({ error: 'Failed to update coach' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Coach not found' });
+        }
+
+        return res.status(200).json({ message: 'Coach updated successfully' });
+    });
+});
+
+// Route to delete a coach
+app.delete('/Coaches/:id', (req, res) => {
+    const { id: coach_id } = req.params; // Extract coach ID from URL
+
+    const sql = "DELETE FROM Coaches WHERE coach_id = ?";
+
+    db.query(sql, [coach_id], (err, data) => {
+        if (err) {
+            console.error("Error deleting coach:", err.message);
+            return res.status(500).json({ error: 'Failed to delete coach' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Coach not found' });
+        }
+
+        return res.status(200).json({ message: 'Coach deleted successfully' });
+    });
+});
+// Route to fetch all doctors
+app.get('/Doctors', (req, res) => {
+    const sql = "SELECT * FROM Doctors"; // Ensure your table name is correct
+    db.query(sql, (err, data) => {
+        if (err) {
+            console.error("Error fetching doctors:", err.message);
+            return res.status(500).json({ error: 'Failed to fetch doctors' });
+        }
+        return res.status(200).json(data);
+    });
+});
+
+// Route to add a new doctor
+app.post('/Doctors', (req, res) => {
+    console.log("Received body:", req.body); // Check incoming data
+    const { first_name, last_name, specialization, institute_id } = req.body; // Removed player_id
+
+    const sql = "INSERT INTO Doctors (first_name, last_name, specialization, institute_id) VALUES (?, ?, ?, ?)";
+    db.query(sql, [first_name, last_name, specialization, institute_id], (err, data) => {
+        if (err) {
+            console.error("Error inserting doctor:", err.message);
+            if (err.code === 'ER_DUP_ENTRY') {
+                return res.status(409).json({ error: 'Duplicate entry for doctor_id' });
+            }
+            return res.status(500).json({ error: 'Failed to add doctor' });
+        }
+        return res.status(201).json({ message: 'Doctor added successfully', data });
+    });
+});
+
+// Route to update a doctor
+app.put('/Doctors/:id', (req, res) => {
+    console.log("Received body for update:", req.body); // Check incoming data
+    const { first_name, last_name, specialization, institute_id } = req.body; // Removed player_id
+    const { id: doctor_id } = req.params; // Extract doctor ID from URL
+
+    // Corrected SQL query without a trailing comma
+    const sql = "UPDATE Doctors SET first_name = ?, last_name = ?, specialization = ?, institute_id = ? WHERE doctor_id = ?";
+    
+    db.query(sql, [first_name, last_name, specialization, institute_id, doctor_id], (err, data) => {
+        if (err) {
+            console.error("Error updating doctor:", err.message);
+            return res.status(500).json({ error: 'Failed to update doctor' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Doctor not found' });
+        }
+
+        return res.status(200).json({ message: 'Doctor updated successfully' });
+    });
+});
+
+// Route to delete a doctor
+app.delete('/Doctors/:id', (req, res) => {
+    const { id: doctor_id } = req.params; // Extract doctor ID from URL
+
+    const sql = "DELETE FROM Doctors WHERE doctor_id = ?";
+
+    db.query(sql, [doctor_id], (err, data) => {
+        if (err) {
+            console.error("Error deleting doctor:", err.message);
+            return res.status(500).json({ error: 'Failed to delete doctor' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Doctor not found' });
+        }
+
+        return res.status(200).json({ message: 'Doctor deleted successfully' });
+    });
+});
+
+// Route to fetch all events
+app.get('/events', (req, res) => {
+    const sql = "SELECT * FROM Events"; // Ensure your table name is correct
+    db.query(sql, (err, data) => {
+        if (err) {
+            console.error("Error fetching events:", err.message);
+            return res.status(500).json({ error: 'Failed to fetch events' });
+        }
+        return res.status(200).json(data);
+    });
+});
+
+// Route to add a new event
+app.post('/events', (req, res) => {
+    console.log("Received body:", req.body); // Check incoming data
+    const { event_name, event_date, location, description } = req.body; // Extract fields including description
+
+    const sql = "INSERT INTO Events (event_name, event_date, location, description) VALUES (?, ?, ?, ?)";
+    db.query(sql, [event_name, event_date, location, description], (err, data) => {
+        if (err) {
+            console.error("Error inserting event:", err.message);
+            return res.status(500).json({ error: 'Failed to add event' });
+        }
+        return res.status(201).json({ message: 'Event added successfully', data });
+    });
+});
+
+// Route to update an event
+app.put('/events/:id', (req, res) => {
+    const { id: event_id } = req.params; // Extract event ID from URL
+    const { event_name, event_date, location, description } = req.body; // Extract fields including description
+
+    const sql = "UPDATE Events SET event_name = ?, event_date = ?, location = ?, description = ? WHERE event_id = ?";
+    db.query(sql, [event_name, event_date, location, description, event_id], (err, data) => {
+        if (err) {
+            console.error("Error updating event:", err.message);
+            return res.status(500).json({ error: 'Failed to update event' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        return res.status(200).json({ message: 'Event updated successfully' });
+    });
+});
+
+// Route to delete an event
+app.delete('/events/:id', (req, res) => {
+    const { id: event_id } = req.params; // Extract event ID from URL
+
+    const sql = "DELETE FROM Events WHERE event_id = ?";
+    db.query(sql, [event_id], (err, data) => {
+        if (err) {
+            console.error("Error deleting event:", err.message);
+            return res.status(500).json({ error: 'Failed to delete event' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        return res.status(200).json({ message: 'Event deleted successfully' });
+    });
+});
+
+
 
 
 app.listen(5000, () => {
