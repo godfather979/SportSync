@@ -13,6 +13,10 @@ import Institute from './components/Institutes/Institute';
 import Managers from './components/Managers/Managers';
 import MediaBroadcasters from './components/Media_Broadcasters/Media_Broadcasters';
 import Referees from './components/Referees/Referees';
+import { SearchRelation } from './components/SearchRelation';
+import { SearchPlayerId } from './components/PlayerDoctor/SearchPlayerID';
+import { SearchDoctorId } from './components/PlayerDoctor/SearchDoctorId';
+import PlayerDoctor from './components/PlayerDoctor/PlayerDoctors';
 
 function App() {
 
@@ -32,11 +36,13 @@ const RoutesWeb = () => {
 
   // Check if the current route includes '/table'
   const isTableRoute = location.pathname.includes('/table');
+  const isRelationRoute = location.pathname.includes('/relation');
 
   return (
       <>
 
       {isTableRoute && <SearchTable />}
+      {isRelationRoute && <SearchRelation />}
       <Routes>
         <Route path="/" element={<HomePage/>} />
         <Route path="/bye" element={<Bye />} />
@@ -53,6 +59,11 @@ const RoutesWeb = () => {
         <Route path="/table/sports_facilities" element={<Players />} />
         <Route path="/table/sports_federations" element={<Players />} />
         <Route path="/table/teams" element={<Players />} />
+
+        <Route path="/relation/playerdoctor" element={<PlayerDoctor />} />
+
+        <Route path="/test" element={<SearchPlayerId />} />
+        <Route path="/test2" element={<SearchDoctorId />} />
 
 
         <Route path="/search" element={<SearchTable />} />

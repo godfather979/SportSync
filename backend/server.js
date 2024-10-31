@@ -651,6 +651,87 @@ app.delete('/Referees/:id', (req, res) => {
     });
 });
 
+// Route to fetch all player_id
+app.get('/player_id', (req, res) => {
+    const sql = "SELECT player_id FROM Players"; // Ensure your table name is correct
+    db.query(sql, (err, data) => {
+        if (err) {
+            console.error("Error fetching player_ids:", err.message);
+            return res.status(500).json({ error: 'Failed to fetch player_ids' });
+        }
+        return res.status(200).json(data);
+    });
+});
+
+// Route to fetch all doctor_id
+app.get('/doctor_id', (req, res) => {
+    const sql = "SELECT doctor_id FROM Doctors"; // Ensure your table name is correct
+    db.query(sql, (err, data) => {
+        if (err) {
+            console.error("Error fetching doctor_ids:", err.message);
+            return res.status(500).json({ error: 'Failed to fetch doctor_ids' });
+        }
+        return res.status(200).json(data);
+    });
+});
+
+//player-doctor query
+app.get('/players/:playerId/doctors/:doctorId', (req, res) => {
+    const player_id = parseInt(req.params.playerId, 10); // Ensure ID is a number
+    const doctor_id = parseInt(req.params.doctorId, 10); // Ensure ID is a number
+
+    let sql;
+    let queryParams = [];
+
+    if(doctor_id!==0 && player_id===0){
+
+        sql = 
+        `SELECT p.player_id, p.first_name,p.last_name, p.sport, p.age, d.doctor_id, d.first_name, d.last_name, d.specialization
+        FROM PlayerView p
+        JOIN PlayerDoctor pd ON p.player_id = pd.player_id
+        JOIN Doctors d ON pd.doctor_id = d.doctor_id
+        WHERE d.doctor_id=?;`
+        queryParams = [doctor_id];
+    }
+
+    else if(player_id!==0&&doctor_id===0){
+
+        sql = 
+        `SELECT p.player_id, p.first_name,p.last_name, p.sport, p.age, d.doctor_id, d.first_name, d.last_name, d.specialization
+        FROM PlayerView p
+        JOIN PlayerDoctor pd ON p.player_id = pd.player_id
+        JOIN Doctors d ON pd.doctor_id = d.doctor_id
+        WHERE p.player_id=?;`
+        queryParams = [player_id];
+    }
+
+    else{
+        sql = 
+        `SELECT p.player_id, p.first_name AS p_f_name ,p.last_name as p_l_name, p.sport, p.age, d.doctor_id, d.first_name, d.last_name, d.specialization
+        FROM PlayerView p
+        JOIN PlayerDoctor pd ON p.player_id = pd.player_id
+        JOIN Doctors d ON pd.doctor_id = d.doctor_id;`
+        
+    }
+    
+
+    db.query(sql, queryParams, (err, data) => {
+        if (err) {
+            console.error("Error fetching player data:", err.message);
+            return res.status(500).json({ error: 'Failed to fetch player data' });
+        }
+
+        if (data.length === 0) {
+            return res.status(404).json({ error: 'No matching records found' });
+        }
+
+        return res.status(200).json(data);
+    });
+});
+
+
+
+
 app.listen(5000, () => {
     console.log("Listening on port 5000");
 })

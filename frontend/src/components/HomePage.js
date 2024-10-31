@@ -57,6 +57,10 @@ export function HomePage() {
     navigate('/table/players');
   };
 
+  const handleViewRelations = () => {
+    navigate('/relation/playerdoctor');
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
       {/* Welcome Section */}
@@ -134,7 +138,7 @@ export function HomePage() {
             <div className="grid grid-cols-2 gap-10">
               <button onClick={handleAddPlayer} className="btn btn-primary btn-outline text-2xl">Add Athlete</button>
               <button className="btn btn-primary btn-outline text-2xl">Create Team</button>
-              <button className="btn btn-primary btn-outline text-2xl">Schedule Event</button>
+              <button className="btn btn-primary btn-outline text-2xl" onClick={handleViewRelations}>View Relation</button>
               <button className="btn btn-primary btn-outline text-2xl" onClick={handleViewTables}>View Tables</button>
             </div>
           </div>
