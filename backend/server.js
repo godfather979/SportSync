@@ -388,8 +388,202 @@ app.delete('/events/:id', (req, res) => {
     });
 });
 
+// Route to fetch all institutes
+app.get('/institutes', (req, res) => {
+    const sql = "SELECT * FROM Institutes"; // Ensure your table name is correct
+    db.query(sql, (err, data) => {
+        if (err) {
+            console.error("Error fetching institutes:", err.message);
+            return res.status(500).json({ error: 'Failed to fetch institutes' });
+        }
+        return res.status(200).json(data);
+    });
+});
 
+// Route to add a new institute
+app.post('/institutes', (req, res) => {
+    console.log("Received body:", req.body); // Check incoming data
+    const { institute_name, city, ranking, sports_type, established_year } = req.body; // Extract fields
 
+    const sql = "INSERT INTO Institutes (institute_name, city, ranking, sports_type, established_year) VALUES (?, ?, ?, ?, ?)";
+    db.query(sql, [institute_name, city, ranking, sports_type, established_year], (err, data) => {
+        if (err) {
+            console.error("Error inserting institute:", err.message);
+            return res.status(500).json({ error: 'Failed to add institute' });
+        }
+        return res.status(201).json({ message: 'Institute added successfully', data });
+    });
+});
+
+// Route to update an institute
+app.put('/institutes/:id', (req, res) => {
+    const { id: institute_id } = req.params; // Extract institute ID from URL
+    const { institute_name, city, ranking, sports_type, established_year } = req.body; // Extract fields
+
+    const sql = "UPDATE Institutes SET institute_name = ?, city = ?, ranking = ?, sports_type = ?, established_year = ? WHERE institute_id = ?";
+    db.query(sql, [institute_name, city, ranking, sports_type, established_year, institute_id], (err, data) => {
+        if (err) {
+            console.error("Error updating institute:", err.message);
+            return res.status(500).json({ error: 'Failed to update institute' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Institute not found' });
+        }
+
+        return res.status(200).json({ message: 'Institute updated successfully' });
+    });
+});
+
+// Route to delete an institute
+app.delete('/institutes/:id', (req, res) => {
+    const { id: institute_id } = req.params; // Extract institute ID from URL
+
+    const sql = "DELETE FROM Institutes WHERE institute_id = ?";
+    db.query(sql, [institute_id], (err, data) => {
+        if (err) {
+            console.error("Error deleting institute:", err.message);
+            return res.status(500).json({ error: 'Failed to delete institute' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Institute not found' });
+        }
+
+        return res.status(200).json({ message: 'Institute deleted successfully' });
+    });
+});
+// Route to fetch all managers
+app.get('/managers', (req, res) => {
+    const sql = "SELECT * FROM Managers"; // Ensure your table name is correct
+    db.query(sql, (err, data) => {
+        if (err) {
+            console.error("Error fetching managers:", err.message);
+            return res.status(500).json({ error: 'Failed to fetch managers' });
+        }
+        return res.status(200).json(data);
+    });
+});
+
+// Route to add a new manager
+app.post('/managers', (req, res) => {
+    console.log("Received body:", req.body); // Check incoming data
+    const {  first_name, last_name } = req.body; // Extract fields
+
+    const sql = "INSERT INTO Managers ( first_name, last_name) VALUES (?, ?)";
+    db.query(sql, [ first_name, last_name], (err, data) => {
+        if (err) {
+            console.error("Error inserting manager:", err.message);
+            return res.status(500).json({ error: 'Failed to add manager' });
+        }
+        return res.status(201).json({ message: 'Manager added successfully', data });
+    });
+});
+
+// Route to update a manager
+app.put('/managers/:id', (req, res) => {
+    const { id: manager_id } = req.params; // Extract manager ID from URL
+    const { first_name, last_name } = req.body; // Extract fields
+
+    const sql = "UPDATE Managers SET first_name = ?, last_name = ? WHERE manager_id = ?";
+    db.query(sql, [first_name, last_name, manager_id], (err, data) => {
+        if (err) {
+            console.error("Error updating manager:", err.message);
+            return res.status(500).json({ error: 'Failed to update manager' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Manager not found' });
+        }
+
+        return res.status(200).json({ message: 'Manager updated successfully' });
+    });
+});
+
+// Route to delete a manager
+app.delete('/managers/:id', (req, res) => {
+    const { id: manager_id } = req.params; // Extract manager ID from URL
+
+    const sql = "DELETE FROM Managers WHERE manager_id = ?";
+    db.query(sql, [manager_id], (err, data) => {
+        if (err) {
+            console.error("Error deleting manager:", err.message);
+            return res.status(500).json({ error: 'Failed to delete manager' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Manager not found' });
+        }
+
+        return res.status(200).json({ message: 'Manager deleted successfully' });
+    });
+});
+
+// Route to fetch all media broadcasters
+app.get('/media_broadcasters', (req, res) => {
+    const sql = "SELECT * FROM Media_Broadcasters"; // Ensure your table name is correct
+    db.query(sql, (err, data) => {
+        if (err) {
+            console.error("Error fetching media broadcasters:", err.message);
+            return res.status(500).json({ error: 'Failed to fetch media broadcasters' });
+        }
+        return res.status(200).json(data);
+    });
+});
+
+// Route to add a new media broadcaster
+app.post('/media_broadcasters', (req, res) => {
+    console.log("Received body:", req.body); // Check incoming data
+    const { broadcaster_name, city, monthly_viewers } = req.body; // Extract fields
+
+    const sql = "INSERT INTO Media_Broadcasters (broadcaster_name, city, monthly_viewers) VALUES (?, ?, ?)";
+    db.query(sql, [broadcaster_name, city, monthly_viewers], (err, data) => {
+        if (err) {
+            console.error("Error inserting media broadcaster:", err.message);
+            return res.status(500).json({ error: 'Failed to add media broadcaster' });
+        }
+        return res.status(201).json({ message: 'Media broadcaster added successfully', data });
+    });
+});
+
+// Route to update a media broadcaster
+app.put('/media_broadcasters/:id', (req, res) => {
+    const { id: broadcaster_id } = req.params; // Extract broadcaster ID from URL
+    const { broadcaster_name, city, monthly_viewers } = req.body; // Extract fields
+
+    const sql = "UPDATE Media_Broadcasters SET broadcaster_name = ?, city = ?, monthly_viewers = ? WHERE broadcaster_id = ?";
+    db.query(sql, [broadcaster_name, city, monthly_viewers, broadcaster_id], (err, data) => {
+        if (err) {
+            console.error("Error updating media broadcaster:", err.message);
+            return res.status(500).json({ error: 'Failed to update media broadcaster' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Media broadcaster not found' });
+        }
+
+        return res.status(200).json({ message: 'Media broadcaster updated successfully' });
+    });
+});
+
+// Route to delete a media broadcaster
+app.delete('/media_broadcasters/:id', (req, res) => {
+    const { id: broadcaster_id } = req.params; // Extract broadcaster ID from URL
+
+    const sql = "DELETE FROM Media_Broadcasters WHERE broadcaster_id = ?";
+    db.query(sql, [broadcaster_id], (err, data) => {
+        if (err) {
+            console.error("Error deleting media broadcaster:", err.message);
+            return res.status(500).json({ error: 'Failed to delete media broadcaster' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Media broadcaster not found' });
+        }
+
+        return res.status(200).json({ message: 'Media broadcaster deleted successfully' });
+    });
+});
 
 app.listen(5000, () => {
     console.log("Listening on port 5000");

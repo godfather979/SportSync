@@ -9,7 +9,9 @@ import Fans from './components/Fan/Fans';
 import Coaches from './components/Coaches/Coaches';
 import Doctors from './components/Doctors/Doctors';
 import Events from './components/Events/Events';
-
+import Institute from './components/Institutes/Institute';
+import Managers from './components/Managers/Managers';
+import MediaBroadcasters from './components/Media_Broadcasters/Media_Broadcasters';
 
 function App() {
 
@@ -42,9 +44,9 @@ const RoutesWeb = () => {
         <Route path="/table/doctors" element={<Doctors />} />
         <Route path="/table/events" element={<Events />} />
         <Route path="/table/fans" element={<Fans />} />
-        <Route path="/table/institutes" element={<Players />} />
-        <Route path="/table/managers" element={<Players />} />
-        <Route path="/table/media_broadcasters" element={<Players />} />
+        <Route path="/table/institutes" element={<Institute />} />
+        <Route path="/table/managers" element={<Managers />} />
+        <Route path="/table/media_broadcasters" element={<MediaBroadcasters />} />
         <Route path="/table/referees" element={<Players />} />
         <Route path="/table/sponsors" element={<Players />} />
         <Route path="/table/sports_facilities" element={<Players />} />

@@ -88,6 +88,7 @@ function Doctors() {
                     <th className="text-primary font-semibold px-4 py-3">Name</th>
                     <th className="text-primary font-semibold px-4 py-3">Specialization</th>
                     <th className="text-primary font-semibold px-4 py-3">Institute ID</th>
+
                     <th className="text-primary font-semibold px-4 py-3">Actions</th>
                   </tr>
                 </thead>

@@ -1,29 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 
-export function InstituteForm({ onClose, onSubmit, institute = {} }) {
+export function Media_BroadcastersForm({ onClose, onSubmit, broadcaster = {} }) {
     const [formData, setFormData] = useState({
-        institute_name: institute?.institute_name || '',
-        city: institute?.city || '',
-        ranking: institute?.ranking || '',
-        sports_type: institute?.sports_type || '',
-        established_year: institute?.established_year ? moment(institute.established_year).format('YYYY') : '',
+        broadcaster_name: broadcaster?.broadcaster_name || '',
+        city: broadcaster?.city || '',
+        monthly_viewers: broadcaster?.monthly_viewers || '',
     });
 
     const [error, setError] = useState('');
-    const isEditMode = Boolean(institute?.institute_id);
+    const isEditMode = Boolean(broadcaster?.broadcaster_id);
 
     useEffect(() => {
-        if (institute) {
+        if (broadcaster) {
             setFormData({
-                institute_name: institute.institute_name || '',
-                city: institute.city || '',
-                ranking: institute.ranking || '',
-                sports_type: institute.sports_type || '',
-                established_year: institute.established_year ? moment(institute.established_year).format('YYYY') : '',
+                broadcaster_name: broadcaster.broadcaster_name || '',
+                city: broadcaster.city || '',
+                monthly_viewers: broadcaster.monthly_viewers || '',
             });
         }
-    }, [institute]);
+    }, [broadcaster]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -33,11 +29,11 @@ export function InstituteForm({ onClose, onSubmit, institute = {} }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        console.log(`${isEditMode ? 'Updating' : 'Adding'} institute data:`, formData);
+        console.log(`${isEditMode ? 'Updating' : 'Adding'} broadcaster data:`, formData);
 
         try {
             const response = await fetch(
-                `http://localhost:5000/Institutes${isEditMode ? `/${institute.institute_id}` : ''}`,
+                `http://localhost:5000/media_broadcasters${isEditMode ? `/${broadcaster.broadcaster_id}` : ''}`,
                 {
                     method: isEditMode ? 'PUT' : 'POST',
                     headers: {
@@ -50,12 +46,12 @@ export function InstituteForm({ onClose, onSubmit, institute = {} }) {
             const result = await response.json();
 
             if (!response.ok) {
-                const errorMsg = result.error || 'Failed to save institute data';
+                const errorMsg = result.error || 'Failed to save broadcaster data';
                 throw new Error(errorMsg);
             }
 
-            console.log(`${isEditMode ? 'Institute updated' : 'Institute added'} successfully:`, result);
-            setFormData({ institute_name: '', city: '', ranking: '', sports_type: '', established_year: '' }); // Reset form on success
+            console.log(`${isEditMode ? 'Broadcaster updated' : 'Broadcaster added'} successfully:`, result);
+            setFormData({ broadcaster_name: '', city: '', monthly_viewers: '' }); // Reset form on success
             onSubmit(); // Notify parent component of success
         } catch (err) {
             console.error('Error:', err);
@@ -65,17 +61,17 @@ export function InstituteForm({ onClose, onSubmit, institute = {} }) {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-slate-400 bg-opacity-50">
-            <div className="w-[375px] h-[500px] bg-gray-50 rounded-tl-[35px] rounded-tr-[35px] p-6 relative">
+            <div className="w-[375px] h-[400px] bg-gray-50 rounded-tl-[35px] rounded-tr-[35px] p-6 relative">
                 <h2 className="text-xl font-bold mb-4">
-                    {isEditMode ? 'Edit Institute' : 'Add New Institute'}
+                    {isEditMode ? 'Edit Broadcaster' : 'Add New Broadcaster'}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <input
                         type="text"
-                        name="institute_name"
-                        placeholder="Institute Name"
+                        name="broadcaster_name"
+                        placeholder="Broadcaster Name"
                         className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={formData.institute_name}
+                        value={formData.broadcaster_name}
                         onChange={handleChange}
                         required
                     />
@@ -90,28 +86,12 @@ export function InstituteForm({ onClose, onSubmit, institute = {} }) {
                     />
                     <input
                         type="number"
-                        name="ranking"
-                        placeholder="Ranking"
+                        name="monthly_viewers"
+                        placeholder="Monthly Viewers"
                         className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={formData.ranking}
-                        onChange={handleChange}
-                    />
-                    <input
-                        type="text"
-                        name="sports_type"
-                        placeholder="Sports Type"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={formData.sports_type}
+                        value={formData.monthly_viewers}
                         onChange={handleChange}
                         required
-                    />
-                    <input
-                        type="number"
-                        name="established_year"
-                        placeholder="Established Year (YYYY)"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={formData.established_year}
-                        onChange={handleChange}
                     />
 
                     {error && <div className="text-red-500">{error}</div>} {/* Display error message */}
@@ -134,4 +114,4 @@ export function InstituteForm({ onClose, onSubmit, institute = {} }) {
     );
 }
 
-export default InstituteForm;
+export default Media_BroadcastersForm;
