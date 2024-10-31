@@ -585,6 +585,72 @@ app.delete('/media_broadcasters/:id', (req, res) => {
     });
 });
 
+// Route to fetch all referees
+app.get('/Referees', (req, res) => {
+    const sql = "SELECT * FROM Referees"; // Ensure your table name is correct
+    db.query(sql, (err, data) => {
+        if (err) {
+            console.error("Error fetching media broadcasters:", err.message);
+            return res.status(500).json({ error: 'Failed to fetch media broadcasters' });
+        }
+        return res.status(200).json(data);
+    });
+});
+
+// Route to add a new referee
+app.post('/Referees', (req, res) => {
+    console.log("Received body:", req.body); // Check incoming data
+    const { first_name, last_name, experience } = req.body; // Extract fields
+
+    const sql = "INSERT INTO Referees (first_name, last_name, experience) VALUES (?, ?, ?)";
+    db.query(sql, [first_name, last_name, experience], (err, data) => {
+        if (err) {
+            console.error("Error inserting referee:", err.message);
+            return res.status(500).json({ error: 'Failed to add referee' });
+        }
+        return res.status(201).json({ message: 'Referee added successfully', data });
+    });
+});
+
+// Route to update a referee
+app.put('/Referees/:id', (req, res) => {
+    const { id: referee_id } = req.params; // Extract broadcaster ID from URL
+    const { first_name, last_name, experience } = req.body; // Extract fields
+
+    const sql = "UPDATE Referees SET first_name = ?, last_name = ?, experience = ? WHERE referee_id = ?";
+    db.query(sql, [first_name, last_name, experience,referee_id], (err, data) => {
+        if (err) {
+            console.error("Error updating referee:", err.message);
+            return res.status(500).json({ error: 'Failed to update referee' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Referee not found' });
+        }
+
+        return res.status(200).json({ message: 'Referee updated successfully' });
+    });
+});
+
+// Route to delete a referee
+app.delete('/Referees/:id', (req, res) => {
+    const { id: referee_id } = req.params; // Extract referee ID from URL
+
+    const sql = "DELETE FROM Referees WHERE referee_id = ?";
+    db.query(sql, [referee_id], (err, data) => {
+        if (err) {
+            console.error("Error deleting media referee:", err.message);
+            return res.status(500).json({ error: 'Failed to delete media referee' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Media referee not found' });
+        }
+
+        return res.status(200).json({ message: 'Media referee deleted successfully' });
+    });
+});
+
 app.listen(5000, () => {
     console.log("Listening on port 5000");
 })
