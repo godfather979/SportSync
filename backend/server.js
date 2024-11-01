@@ -686,7 +686,7 @@ app.get('/players/:playerId/doctors/:doctorId', (req, res) => {
     if(doctor_id!==0 && player_id===0){
 
         sql = 
-        `SELECT p.player_id, p.first_name,p.last_name, p.sport, p.age, d.doctor_id, d.first_name, d.last_name, d.specialization
+        `SELECT p.player_id, p.first_name AS p_f_name ,p.last_name as p_l_name, p.sport, p.age, d.doctor_id, d.first_name, d.last_name, d.specialization
         FROM PlayerView p
         JOIN PlayerDoctor pd ON p.player_id = pd.player_id
         JOIN Doctors d ON pd.doctor_id = d.doctor_id
@@ -697,7 +697,7 @@ app.get('/players/:playerId/doctors/:doctorId', (req, res) => {
     else if(player_id!==0&&doctor_id===0){
 
         sql = 
-        `SELECT p.player_id, p.first_name,p.last_name, p.sport, p.age, d.doctor_id, d.first_name, d.last_name, d.specialization
+        `SELECT p.player_id, p.first_name AS p_f_name ,p.last_name as p_l_name, p.sport, p.age, d.doctor_id, d.first_name, d.last_name, d.specialization
         FROM PlayerView p
         JOIN PlayerDoctor pd ON p.player_id = pd.player_id
         JOIN Doctors d ON pd.doctor_id = d.doctor_id
@@ -739,7 +739,7 @@ app.post('/PlayerDoctor', (req, res) => {
     db.query(sql, [player_id, doctor_id], (err, data) => {
         if (err) {
             console.error("Error inserting referee:", err.message);
-            return res.status(500).json({ error: 'Failed to add referee' });
+            return res.status(500).json({ error: 'Failed to add relation' });
         }
         return res.status(201).json({ message: 'Referee added successfully', data });
     });

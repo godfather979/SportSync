@@ -53,6 +53,10 @@ export function SearchDoctorId({ selectedDoctorId, setSelectedDoctorId, selected
         fetchTables();
       }, []);
 
+      useEffect(() => {
+        setValue(selectedDoctorId); // Update value when selectedDoctorId changes
+      }, [selectedDoctorId]);
+
     const fetchTables = async () => {
         try {
         const res = await fetch('http://localhost:5000/doctor_id');
@@ -84,17 +88,34 @@ export function SearchDoctorId({ selectedDoctorId, setSelectedDoctorId, selected
           aria-expanded={open}
           className="w-[250px] justify-between"
         >
-          {value
+          {/* {value
             ? tables.find((table) => table.value === value)?.label
-            : "Select doctor..."}
+            : "Select doctor..."} */}
+            {/* {selectedDoctorId
+              ? tables.find((table) => table.value === String(selectedDoctorId))?.label
+              : "Select doctor..."
+              } */}
+              {selectedDoctorId
+                ? tables.find((table) => {
+                  // console.log("Inside tables.find - table.value:", table.value);
+                  // console.log("Inside tables.find - table.value type:", typeof table.value);
+                  // console.log("Inside tables.find - doc_id:", selectedDoctorId);
+                  // console.log("Inside tables.find - doc_id_type:", typeof selectedDoctorId);
+
+                  // console.log(table.value === String(selectedDoctorId));
+                  return String(table.value) === String(selectedDoctorId);
+                })?.label
+  : "Select doctor..."}
+            
+            
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[250px] p-0 bg-white bg-opacity-100">
         <Command>
-          <CommandInput placeholder="Search table..." />
+          <CommandInput placeholder="Search doctor..." />
           <CommandList>
-            <CommandEmpty>No table found.</CommandEmpty>
+            <CommandEmpty>No Doctor found.</CommandEmpty>
             <CommandGroup>
               {tables.map((table) => (
                 <CommandItem
