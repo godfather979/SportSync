@@ -17,6 +17,7 @@ import { SearchRelation } from './components/SearchRelation';
 import { SearchPlayerId } from './components/PlayerDoctor/SearchPlayerID';
 import { SearchDoctorId } from './components/PlayerDoctor/SearchDoctorId';
 import PlayerDoctor from './components/PlayerDoctor/PlayerDoctors';
+import Matches from './components/Matches/Matches';
 
 function App() {
 
@@ -61,6 +62,7 @@ const RoutesWeb = () => {
         <Route path="/table/teams" element={<Players />} />
 
         <Route path="/relation/playerdoctor" element={<PlayerDoctor />} />
+        <Route path="/relation/matches" element={<Matches />} />
 
         <Route path="/test" element={<SearchPlayerId />} />
         <Route path="/test2" element={<SearchDoctorId />} />

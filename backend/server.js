@@ -675,6 +675,44 @@ app.get('/doctor_id', (req, res) => {
     });
 });
 
+// Route to fetch all matches
+app.get('/Matches', (req, res) => {
+    const sql = `SELECT 
+                    m.match_id,
+                    p1.first_name AS player1_f_name, 
+                    p1.last_name AS player1_l_name, 
+                    p1.age AS player1age, 
+                    p2.first_name AS player2_f_name, 
+                    p2.last_name AS player2_l_name, 
+                    p1.age AS player2_age, 
+                    r.first_name AS referee_f_name, 
+                    r.last_name AS referee_l_name, 
+
+                    sf.facility_name AS facility_name, 
+                    sf.location AS facility_location,
+                    m.date
+
+                    FROM 
+                    Matches m 
+                    JOIN 
+                    PlayerView p1 ON m.player1_id = p1.player_id 
+                    JOIN 
+                    PlayerView p2 ON m.player2_id = p2.player_id 
+                    JOIN 
+                    Referees r ON m.referee_id = r.referee_id
+                    JOIN 
+                    Sports_Facilities sf ON m.facility_id = sf.facility_id;`
+
+
+    db.query(sql, (err, data) => {
+        if (err) {
+            console.error("Error fetching doctor_ids:", err.message);
+            return res.status(500).json({ error: 'Failed to fetch doctor_ids' });
+        }
+        return res.status(200).json(data);
+    });
+});
+
 //player-doctor query
 app.get('/players/:playerId/doctors/:doctorId', (req, res) => {
     const player_id = parseInt(req.params.playerId, 10); // Ensure ID is a number
