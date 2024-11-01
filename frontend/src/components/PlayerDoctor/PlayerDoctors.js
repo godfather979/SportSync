@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import moment from "moment";
-import { PlayerForm } from '../Player/PlayerForm';
+import { PlayerDoctorForm } from "./PlayerDoctorForm";
 import { SearchPlayerId } from "./SearchPlayerID";
 import { SearchDoctorId } from "./SearchDoctorId";
 
@@ -162,11 +162,9 @@ function PlayerDoctor() {
       <h1>doc:{selectedDoctorId} player:{selectedPlayerId}</h1>
 
       {isFormVisible && (
-        <PlayerForm
-          player={editingPlayer} // Pass null if adding a new player
+        <PlayerDoctorForm
           onClose={handleClose}
           onSubmit={handleFormSubmit}
-          //isEditing={Boolean(editingPlayer)} // Pass a flag to check if editing
         />
       )}
     </div>

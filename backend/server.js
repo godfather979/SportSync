@@ -730,6 +730,21 @@ app.get('/players/:playerId/doctors/:doctorId', (req, res) => {
 });
 
 
+// Route to add a new referee
+app.post('/PlayerDoctor', (req, res) => {
+    console.log("Received body:", req.body); // Check incoming data
+    const { player_id, doctor_id } = req.body; // Extract fields
+
+    const sql = "INSERT INTO PlayerDoctor (player_id, doctor_id) VALUES (?, ?)";
+    db.query(sql, [player_id, doctor_id], (err, data) => {
+        if (err) {
+            console.error("Error inserting referee:", err.message);
+            return res.status(500).json({ error: 'Failed to add referee' });
+        }
+        return res.status(201).json({ message: 'Referee added successfully', data });
+    });
+});
+
 
 
 app.listen(5000, () => {
