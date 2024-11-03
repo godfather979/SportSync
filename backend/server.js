@@ -322,6 +322,79 @@ app.delete('/Doctors/:id', (req, res) => {
     });
 });
 
+// Route to fetch all sponsors
+app.get('/Sponsors', (req, res) => {
+    const sql = "SELECT * FROM Sponsors"; // Ensure your table name is correct
+    db.query(sql, (err, data) => {
+        if (err) {
+            console.error("Error fetching sponsors:", err.message);
+            return res.status(500).json({ error: 'Failed to fetch sponsors' });
+        }
+        return res.status(200).json(data);
+    });
+});
+
+// Route to add a new sponsor
+app.post('/Sponsors', (req, res) => {
+    console.log("Received body:", req.body); // Check incoming data
+    const { name, amount } = req.body; // Removed player_id
+
+    const sql = "INSERT INTO Sponsors (sponsor_name, sponsorship_amount) VALUES (?, ?)";
+    db.query(sql, [name, amount], (err, data) => {
+        if (err) {
+            console.error("Error inserting sponsor:", err.message);
+            if (err.code === 'ER_DUP_ENTRY') {
+                return res.status(409).json({ error: 'Duplicate entry for sponsor_id' });
+            }
+            return res.status(500).json({ error: 'Failed to add sponsor' });
+        }
+        return res.status(201).json({ message: 'Sponsor added successfully', data });
+    });
+});
+
+// Route to update a sponsor
+app.put('/Sponsors/:id', (req, res) => {
+    console.log("Received body for update:", req.body); // Check incoming data
+    const { name, amount } = req.body; // Removed player_id
+    const { id: sponsor_id } = req.params; // Extract sponsor ID from URL
+
+    // Corrected SQL query without a trailing comma
+    const sql = "UPDATE Sponsors SET sponsor_name = ?, sponsorship_amount = ? WHERE sponsor_id = ?";
+    
+    db.query(sql, [name, amount,sponsor_id], (err, data) => {
+        if (err) {
+            console.error("Error updating sponsor:", err.message);
+            return res.status(500).json({ error: 'Failed to update sponsor' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Sponsor not found' });
+        }
+
+        return res.status(200).json({ message: 'Sponsor updated successfully' });
+    });
+});
+
+// Route to delete a sponsor
+app.delete('/Sponsors/:id', (req, res) => {
+    const { id: sponsor_id } = req.params; // Extract sponsor ID from URL
+
+    const sql = "DELETE FROM Sponsors WHERE sponsor_id = ?";
+
+    db.query(sql, [sponsor_id], (err, data) => {
+        if (err) {
+            console.error("Error deleting sponsor:", err.message);
+            return res.status(500).json({ error: 'Failed to delete sponsor' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Sponsor not found' });
+        }
+
+        return res.status(200).json({ message: 'Sponsor deleted successfully' });
+    });
+});
+
 // Route to fetch all events
 app.get('/events', (req, res) => {
     const sql = "SELECT * FROM Events"; // Ensure your table name is correct

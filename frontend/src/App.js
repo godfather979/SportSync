@@ -18,6 +18,7 @@ import { SearchPlayerId } from './components/PlayerDoctor/SearchPlayerID';
 import { SearchDoctorId } from './components/PlayerDoctor/SearchDoctorId';
 import PlayerDoctor from './components/PlayerDoctor/PlayerDoctors';
 import Matches from './components/Matches/Matches';
+import Sponsors from './components/Sponsors/Sponsors';
 
 function App() {
 
@@ -56,7 +57,7 @@ const RoutesWeb = () => {
         <Route path="/table/managers" element={<Managers />} />
         <Route path="/table/media_broadcasters" element={<MediaBroadcasters />} />
         <Route path="/table/referees" element={<Referees />} />
-        <Route path="/table/sponsors" element={<Players />} />
+        <Route path="/table/sponsors" element={<Sponsors />} />
         <Route path="/table/sports_facilities" element={<Players />} />
         <Route path="/table/sports_federations" element={<Players />} />
         <Route path="/table/teams" element={<Players />} />
