@@ -19,6 +19,8 @@ import { SearchDoctorId } from './components/PlayerDoctor/SearchDoctorId';
 import PlayerDoctor from './components/PlayerDoctor/PlayerDoctors';
 import Matches from './components/Matches/Matches';
 import Sponsors from './components/Sponsors/Sponsors';
+import Sports_Facilities from './components/Sports_Facilities/Sports_Facilities';
+import Sports_Federations from './components/Sports_Federation/Sports_Federations';
 
 function App() {
 
@@ -58,8 +60,8 @@ const RoutesWeb = () => {
         <Route path="/table/media_broadcasters" element={<MediaBroadcasters />} />
         <Route path="/table/referees" element={<Referees />} />
         <Route path="/table/sponsors" element={<Sponsors />} />
-        <Route path="/table/sports_facilities" element={<Players />} />
-        <Route path="/table/sports_federations" element={<Players />} />
+        <Route path="/table/sports_facilities" element={<Sports_Facilities />} />
+        <Route path="/table/sports_federations" element={<Sports_Federations />} />
         <Route path="/table/teams" element={<Players />} />
 
         <Route path="/relation/playerdoctor" element={<PlayerDoctor />} />

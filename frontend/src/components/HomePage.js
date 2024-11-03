@@ -4,8 +4,29 @@ import { motion } from 'framer-motion';
 import { PlayerForm } from './Player/PlayerForm';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from "react";
 
 export function HomePage() {
+  const [totalAthletes, setTotalAthletes] = useState(0);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const athletesResponse = await fetch('/api/players/count');
+        const athletesData = await athletesResponse.json();
+        setTotalAthletes(athletesData.count); // Adjust based on your API response structure
+
+        const eventsResponse = await fetch('/api/events/upcoming');
+        const eventsData = await eventsResponse.json();
+        setUpcomingEvents(eventsData); // Adjust based on your API response structure
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
 
 
   const navigate = useNavigate();
@@ -16,7 +37,7 @@ export function HomePage() {
   ];
 
   const stats = [
-    { title: 'Total Athletes', value: '150+', icon: '👥' },
+    { title: 'Total Players', value: '150+', icon: '👥' },
     { title: 'Active Teams', value: '12', icon: '🏆' },
     { title: 'Upcoming Events', value: '8', icon: '📅' },
     { title: 'Performance Reports', value: '45', icon: '📊' }

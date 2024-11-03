@@ -657,6 +657,137 @@ app.delete('/media_broadcasters/:id', (req, res) => {
         return res.status(200).json({ message: 'Media broadcaster deleted successfully' });
     });
 });
+// Route to fetch all sports facilities
+app.get('/sports_facilities', (req, res) => {
+    const sql = "SELECT * FROM Sports_Facilities"; // Ensure your table name is correct
+    db.query(sql, (err, data) => {
+        if (err) {
+            console.error("Error fetching sports facilities:", err.message);
+            return res.status(500).json({ error: 'Failed to fetch sports facilities' });
+        }
+        return res.status(200).json(data);
+    });
+});
+
+// Route to add a new sports facility
+app.post('/sports_facilities', (req, res) => {
+    console.log("Received body:", req.body); // Check incoming data
+    const { facility_name, location, capacity, facility_type } = req.body; // Extract fields
+
+    const sql = "INSERT INTO Sports_Facilities (facility_name, location, capacity, facility_type) VALUES (?, ?, ?, ?)";
+    db.query(sql, [facility_name, location, capacity, facility_type], (err, data) => {
+        if (err) {
+            console.error("Error inserting sports facility:", err.message);
+            return res.status(500).json({ error: 'Failed to add sports facility' });
+        }
+        return res.status(201).json({ message: 'Sports facility added successfully', data });
+    });
+});
+
+// Route to update a sports facility
+app.put('/sports_facilities/:id', (req, res) => {
+    const { id: facility_id } = req.params; // Extract facility ID from URL
+    const { facility_name, location, capacity, facility_type } = req.body; // Extract fields
+
+    const sql = "UPDATE Sports_Facilities SET facility_name = ?, location = ?, capacity = ?, facility_type  = ? WHERE facility_id = ?";
+    db.query(sql, [facility_name, location, capacity, facility_type , facility_id], (err, data) => {
+        if (err) {
+            console.error("Error updating sports facility:", err.message);
+            return res.status(500).json({ error: 'Failed to update sports facility' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Sports facility not found' });
+        }
+
+        return res.status(200).json({ message: 'Sports facility updated successfully' });
+    });
+});
+
+// Route to delete a sports facility
+app.delete('/sports_facilities/:id', (req, res) => {
+    const { id: facility_id } = req.params; // Extract facility ID from URL
+
+    const sql = "DELETE FROM Sports_Facilities WHERE facility_id = ?";
+    db.query(sql, [facility_id], (err, data) => {
+        if (err) {
+            console.error("Error deleting sports facility:", err.message);
+            return res.status(500).json({ error: 'Failed to delete sports facility' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Sports facility not found' });
+        }
+
+        return res.status(200).json({ message: 'Sports facility deleted successfully' });
+    });
+});
+// Route to fetch all sports federations
+app.get('/sports_federations', (req, res) => {
+    const sql = "SELECT * FROM Sports_Federations"; // Ensure your table name is correct
+    db.query(sql, (err, data) => {
+        if (err) {
+            console.error("Error fetching sports federations:", err.message);
+            return res.status(500).json({ error: 'Failed to fetch sports federations' });
+        }
+        return res.status(200).json(data);
+    });
+});
+
+// Route to add a new sports federation
+app.post('/sports_federations', (req, res) => {
+    console.log("Received body:", req.body); // Check incoming data
+    const { federation_name, country, contact_number, email, established_year } = req.body; // Extract fields
+
+    const sql = "INSERT INTO Sports_Federations (federation_name, country, contact_number, email, established_year) VALUES (?, ?, ?, ?, ?)";
+    db.query(sql, [federation_name, country, contact_number, email, established_year], (err, data) => {
+        if (err) {
+            console.error("Error inserting sports federation:", err.message);
+            return res.status(500).json({ error: 'Failed to add sports federation' });
+        }
+        return res.status(201).json({ message: 'Sports federation added successfully', data });
+    });
+});
+
+// Route to update a sports federation
+app.put('/sports_federations/:id', (req, res) => {
+    const { id: federation_id } = req.params; // Extract federation ID from URL
+    const { federation_name, country, contact_number, email, established_year } = req.body; // Extract fields
+
+    const sql = "UPDATE Sports_Federations SET federation_name = ?, country = ?, contact_number = ?, email = ?, established_year = ? WHERE federation_id = ?";
+    db.query(sql, [federation_name, country, contact_number, email, established_year, federation_id], (err, data) => {
+        if (err) {
+            console.error("Error updating sports federation:", err.message);
+            return res.status(500).json({ error: 'Failed to update sports federation' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Sports federation not found' });
+        }
+
+        return res.status(200).json({ message: 'Sports federation updated successfully' });
+    });
+});
+
+// Route to delete a sports federation
+app.delete('/sports_federations/:id', (req, res) => {
+    const { id: federation_id } = req.params; // Extract federation ID from URL
+
+    const sql = "DELETE FROM Sports_Federations WHERE federation_id = ?";
+    db.query(sql, [federation_id], (err, data) => {
+        if (err) {
+            console.error("Error deleting sports federation:", err.message);
+            return res.status(500).json({ error: 'Failed to delete sports federation' });
+        }
+
+        if (data.affectedRows === 0) {
+            return res.status(404).json({ error: 'Sports federation not found' });
+        }
+
+        return res.status(200).json({ message: 'Sports federation deleted successfully' });
+    });
+});
+
 
 // Route to fetch all referees
 app.get('/Referees', (req, res) => {
@@ -855,6 +986,7 @@ app.post('/PlayerDoctor', (req, res) => {
         return res.status(201).json({ message: 'Referee added successfully', data });
     });
 });
+
 
 
 
