@@ -38,9 +38,9 @@ export function HomePage() {
 
   const stats = [
     { title: 'Total Players', value: '150+', icon: '👥' },
-    { title: 'Active Teams', value: '12', icon: '🏆' },
+    { title: 'Matches', value: '12', icon: '🏆' },
     { title: 'Upcoming Events', value: '8', icon: '📅' },
-    { title: 'Performance Reports', value: '45', icon: '📊' }
+    { title: 'Media Broadcasters', value: '45', icon: '📊' }
   ];
 
   const recentActivities = [
@@ -82,8 +82,27 @@ export function HomePage() {
     navigate('/relation/playerdoctor');
   };
 
+  const handleClick = (index) => {
+    console.log(`Button clicked at index: ${index}`);
+    // Handle click based on index here
+
+    if (index === 0) {
+      navigateTo('/table/players');
+    } else if (index === 1) {
+      navigateTo('/relation/matches');
+    } else if (index === 2) {
+      navigateTo('/table/events');
+    } else if (index === 3) {
+      navigateTo('/table/media_broadcasters'); // Example for index 3
+    }
+  };
+
+  const navigateTo = (path) => {
+    navigate(path); // `path` is a string parameter, e.g., "/home" or "/profile"
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
+    <div className="max-w-7xl mx-auto px-4 py-6 min-h-screen">
       {/* Welcome Section */}
       <div className="flex flex-col items-center justify-center mt-10 mb-15">
         <TypewriterEffect words={words} />
@@ -109,12 +128,12 @@ export function HomePage() {
         {stats.map((stat, index) => (
           <motion.div
             key={index}
-            className="card bg-gradient-to-br from-blue-100 to-blue-400 shadow-sm hover:shadow-md transition-shadow flex items-center justify-center flex-col"
+            className="card bg-gradient-to-br border-2 border-white from-blue-100 to-blue-400 shadow-sm hover:shadow-md transition-shadow flex items-center justify-center flex-col hover:border-blue-900 hover:border-2"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <div className="card-body">
+            <button key={index} className="card-body " onClick={() => handleClick(index)}>
               <div className="flex items-center space-x-3">
                 <span className="text-3xl flex justify-center mb-2">{stat.icon}</span>
                 <div>
@@ -122,7 +141,7 @@ export function HomePage() {
                   <p className="text-gray-600">{stat.title}</p>
                 </div>
               </div>
-            </div>
+            </button>
           </motion.div>
         ))}
       </div>
