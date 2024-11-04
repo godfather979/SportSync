@@ -7,25 +7,27 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from "react";
 
 export function HomePage() {
-  const [totalAthletes, setTotalAthletes] = useState(0);
-  const [upcomingEvents, setUpcomingEvents] = useState([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const athletesResponse = await fetch('/api/players/count');
-        const athletesData = await athletesResponse.json();
-        setTotalAthletes(athletesData.count); // Adjust based on your API response structure
+  
+  const [playerCount,setPlayerCount] = useState(null);    //refer this
+  const [matchCount,setMatchCount] = useState(null);      //ye teen tujhe karna hai
+  const [eventCount,setEventCount] = useState(null);
+  const [mediaCount,setMediaCount] = useState(null);
 
-        const eventsResponse = await fetch('/api/events/upcoming');
-        const eventsData = await eventsResponse.json();
-        setUpcomingEvents(eventsData); // Adjust based on your API response structure
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
+  useEffect(() => {                                       //fetchPlayerCount jaise baki 3 function banenge idhar daal de
+    fetchPlayerCount();
   }, []);
+
+
+  const fetchPlayerCount = async () => {                  //ye raha fetch karne
+    try {
+      const res = await fetch('http://localhost:5000/players/count');
+      const players = await res.json();
+      console.log(players);
+      setPlayerCount(players[0].count);
+    } catch (err) {
+      console.error("Error fetching players:", err);
+    }
+  };
 
 
 
@@ -37,7 +39,7 @@ export function HomePage() {
   ];
 
   const stats = [
-    { title: 'Total Players', value: '150+', icon: '👥' },
+    { title: 'Total Players', value: playerCount, icon: '👥' },
     { title: 'Matches', value: '12', icon: '🏆' },
     { title: 'Upcoming Events', value: '8', icon: '📅' },
     { title: 'Media Broadcasters', value: '45', icon: '📊' }

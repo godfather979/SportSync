@@ -987,6 +987,24 @@ app.post('/PlayerDoctor', (req, res) => {
     });
 });
 
+//route to get player count
+app.get('/players/count', async (req, res) => {
+    
+        
+        const sql = "SELECT COUNT(*) AS count FROM Players";
+        db.query(sql, (err, data) => {
+            if (err) {
+                console.error("Error fetching player count:", err.message);
+                return res.status(500).json({ error: 'Failed to player count' });
+            }
+            return res.status(200).json(data);
+        });
+        
+});
+
+
+
+
 
 
 
