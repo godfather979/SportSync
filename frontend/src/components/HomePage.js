@@ -1,26 +1,26 @@
 "use client";
 import { TypewriterEffect } from "./ui/typewriter-effect";
-import { motion } from 'framer-motion';
-import { PlayerForm } from './Player/PlayerForm';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { motion } from "framer-motion";
+import { PlayerForm } from "./Player/PlayerForm";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 export function HomePage() {
-  
-  const [playerCount,setPlayerCount] = useState(null);    //refer this
-  const [matchCount,setMatchCount] = useState(null);      //ye teen tujhe karna hai
-  const [eventCount,setEventCount] = useState(null);
-  const [mediaCount,setMediaCount] = useState(null);
+  const [playerCount, setPlayerCount] = useState(null); //refer this
+  const [matchCount, setMatchCount] = useState(null); //ye teen tujhe karna hai
+  const [eventCount, setEventCount] = useState(null);
+  const [mediaCount, setMediaCount] = useState(null);
 
-  useEffect(() => {                                       //fetchPlayerCount jaise baki 3 function banenge idhar daal de
+  useEffect(() => {
+    //fetchPlayerCount jaise baki 3 function banenge idhar daal de
     fetchPlayerCount();
   }, []);
 
-
-  const fetchPlayerCount = async () => {                  //ye raha fetch karne
+  const fetchPlayerCount = async () => {
+    //ye raha fetch karne
     try {
-      const res = await fetch('http://localhost:5000/players/count');
+      const res = await fetch("http://localhost:5000/players/count");
       const players = await res.json();
       console.log(players);
       setPlayerCount(players[0].count);
@@ -29,27 +29,34 @@ export function HomePage() {
     }
   };
 
-
-
   const navigate = useNavigate();
   const words = [
-    { text: "Welcome", className: "text-black dark:text-black font-prociono-regular" },
-    { text: "To" , className: "text-black dark:text-black font-prociono-regular"},
-    { text: "SportSync", className: "text-blue-500 dark:text-blue-500 font-prociono-regular" },
+    {
+      text: "Welcome",
+      className: "text-black dark:text-black font-prociono-regular",
+    },
+    {
+      text: "To",
+      className: "text-black dark:text-black font-prociono-regular",
+    },
+    {
+      text: "SportSync",
+      className: "text-blue-500 dark:text-blue-500 font-prociono-regular",
+    },
   ];
 
   const stats = [
-    { title: 'Total Players', value: playerCount, icon: '👥' },
-    { title: 'Matches', value: '12', icon: '🏆' },
-    { title: 'Upcoming Events', value: '8', icon: '📅' },
-    { title: 'Media Broadcasters', value: '45', icon: '📊' }
+    { title: "Total Players", value: playerCount, icon: "👥" },
+    { title: "Matches", value: "12", icon: "🏆" },
+    { title: "Upcoming Events", value: "8", icon: "📅" },
+    { title: "Media Broadcasters", value: "45", icon: "📊" },
   ];
 
   const recentActivities = [
-    'Team Alpha completed training session',
-    'New athlete profile added',
-    'Performance report generated',
-    'Updated team roster'
+    "Team Alpha completed training session",
+    "New athlete profile added",
+    "Performance report generated",
+    "Updated team roster",
   ];
 
   const [showForm, setShowForm] = useState(false);
@@ -59,9 +66,9 @@ export function HomePage() {
 
   const handleFormSubmit = async (data) => {
     try {
-      const response = await fetch('/api/addPlayer', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/addPlayer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
 
@@ -69,19 +76,19 @@ export function HomePage() {
         // Handle success (refresh player data, etc.)
         setShowForm(false);
       } else {
-        console.error('Error saving player data');
+        console.error("Error saving player data");
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
 
   const handleViewTables = () => {
-    navigate('/table/players');
+    navigate("/table/players");
   };
 
   const handleViewRelations = () => {
-    navigate('/relation/playerdoctor');
+    navigate("/relation/playerdoctor");
   };
 
   const handleClick = (index) => {
@@ -89,13 +96,13 @@ export function HomePage() {
     // Handle click based on index here
 
     if (index === 0) {
-      navigateTo('/table/players');
+      navigateTo("/table/players");
     } else if (index === 1) {
-      navigateTo('/relation/matches');
+      navigateTo("/relation/matches");
     } else if (index === 2) {
-      navigateTo('/table/events');
+      navigateTo("/table/events");
     } else if (index === 3) {
-      navigateTo('/table/media_broadcasters'); // Example for index 3
+      navigateTo("/table/media_broadcasters"); // Example for index 3
     }
   };
 
@@ -109,7 +116,7 @@ export function HomePage() {
       <div className="flex flex-col items-center justify-center mt-10 mb-15">
         <TypewriterEffect words={words} />
         <div className="flex items-center justify-center space-x-4 mt-6">
-          {['🏏', '🏸', '🏓', '🎾', '🏊‍♂️', '⚽'].map((emoji, index) => (
+          {["🏏", "🏸", "🏓", "🎾", "🏊‍♂️", "⚽"].map((emoji, index) => (
             <motion.span
               key={index}
               className="text-4xl"
@@ -135,11 +142,19 @@ export function HomePage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <button key={index} className="card-body " onClick={() => handleClick(index)}>
+            <button
+              key={index}
+              className="card-body "
+              onClick={() => handleClick(index)}
+            >
               <div className="flex items-center space-x-3">
-                <span className="text-3xl flex justify-center mb-2">{stat.icon}</span>
+                <span className="text-3xl flex justify-center mb-2">
+                  {stat.icon}
+                </span>
                 <div>
-                  <h3 className="text-xl font-bold flex justify-self-center text-gray-800">{stat.value}</h3>
+                  <h3 className="text-xl font-bold flex justify-self-center text-gray-800">
+                    {stat.value}
+                  </h3>
                   <p className="text-gray-600">{stat.title}</p>
                 </div>
               </div>
@@ -157,10 +172,15 @@ export function HomePage() {
           transition={{ duration: 0.6, delay: stats.length * 0.1 }}
         >
           <div className="card-body">
-            <h2 className="card-title text-primary flex justify-center mb-4 text-3x font-prociono">Recent Activities</h2>
+            <h2 className="card-title text-primary flex justify-center mb-4 text-3x font-prociono">
+              Recent Activities
+            </h2>
             <div className="space-y-4">
               {recentActivities.map((activity, index) => (
-                <div key={index} className="flex items-center justify-center space-x-3 text-md poppins-regular">
+                <div
+                  key={index}
+                  className="flex items-center justify-center space-x-3 text-md poppins-regular"
+                >
                   <div className="w-2 h-2 rounded-full bg-primary"></div>
                   <span>{activity}</span>
                 </div>
@@ -176,12 +196,31 @@ export function HomePage() {
           transition={{ duration: 0.6, delay: stats.length * 0.1 + 0.1 }}
         >
           <div className="card-body">
-            <h2 className="card-title text-primary flex justify-center mb-6 text-3xl">Quick Actions</h2>
+            <h2 className="card-title text-primary flex justify-center mb-6 text-3xl">
+              Quick Actions
+            </h2>
             <div className="grid grid-cols-2 gap-10">
-              <button onClick={handleAddPlayer} className="btn btn-primary btn-outline text-2xl">Add Athlete</button>
-              <button className="btn btn-primary btn-outline text-2xl">Create Team</button>
-              <button className="btn btn-primary btn-outline text-2xl" onClick={handleViewRelations}>View Relation</button>
-              <button className="btn btn-primary btn-outline text-2xl" onClick={handleViewTables}>View Tables</button>
+              <button
+                onClick={handleAddPlayer}
+                className="btn btn-primary btn-outline text-2xl"
+              >
+                Add Athlete
+              </button>
+              <button className="btn btn-primary btn-outline text-2xl">
+                Create Team
+              </button>
+              <button
+                className="btn btn-primary btn-outline text-2xl"
+                onClick={handleViewRelations}
+              >
+                View Relation
+              </button>
+              <button
+                className="btn btn-primary btn-outline text-2xl"
+                onClick={handleViewTables}
+              >
+                View Tables
+              </button>
             </div>
           </div>
         </motion.div>

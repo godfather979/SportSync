@@ -15,14 +15,14 @@ function PlayerDoctor() {
     fetchPlayers();
   }, [selectedPlayerId, selectedDoctorId]);
 
-
-
   const fetchPlayers = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/players/${selectedPlayerId}/doctors/${selectedDoctorId}`);
+      const res = await fetch(
+        `http://localhost:5000/players/${selectedPlayerId}/doctors/${selectedDoctorId}`
+      );
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.error || 'Failed to fetch players');
+        throw new Error(errorData.error || "Failed to fetch players");
       }
       const players = await res.json();
       setData(players);
@@ -46,12 +46,12 @@ function PlayerDoctor() {
     if (window.confirm("Are you sure you want to delete this player?")) {
       try {
         const res = await fetch(`http://localhost:5000/Players/${player_id}`, {
-          method: 'DELETE',
+          method: "DELETE",
         });
 
         if (!res.ok) {
           const result = await res.json();
-          throw new Error(result.error || 'Failed to delete player');
+          throw new Error(result.error || "Failed to delete player");
         }
 
         console.log(`Player with ID ${player_id} deleted successfully`);
@@ -87,24 +87,19 @@ function PlayerDoctor() {
           Add Player
         </button>
       </div>
-      <div className = "px-32 flex gap-3">
+      <div className="px-32 flex gap-3">
         <SearchPlayerId
-        
-        selectedDoctorId={selectedDoctorId} // Pass down selected doctor ID
-        setSelectedDoctorId={setSelectedDoctorId} // Pass down function to update doctor ID
-        selectedPlayerId={selectedPlayerId} // Pass down selected doctor ID
-        setSelectedPlayerId={setSelectedPlayerId} // Pass down function to update doctor ID
+          selectedDoctorId={selectedDoctorId} // Pass down selected doctor ID
+          setSelectedDoctorId={setSelectedDoctorId} // Pass down function to update doctor ID
+          selectedPlayerId={selectedPlayerId} // Pass down selected doctor ID
+          setSelectedPlayerId={setSelectedPlayerId} // Pass down function to update doctor ID
         />
         <SearchDoctorId
-        selectedDoctorId={selectedDoctorId} // Pass down selected doctor ID
-        setSelectedDoctorId={setSelectedDoctorId} // Pass down function to update doctor ID
-        selectedPlayerId={selectedPlayerId} // Pass down selected doctor ID
-        setSelectedPlayerId={setSelectedPlayerId} // Pass down function to update doctor ID
+          selectedDoctorId={selectedDoctorId} // Pass down selected doctor ID
+          setSelectedDoctorId={setSelectedDoctorId} // Pass down function to update doctor ID
+          selectedPlayerId={selectedPlayerId} // Pass down selected doctor ID
+          setSelectedPlayerId={setSelectedPlayerId} // Pass down function to update doctor ID
         />
-
-       
-
-        
       </div>
 
       <div className="max-w-5xl mx-auto">
@@ -115,11 +110,21 @@ function PlayerDoctor() {
                 <thead>
                   <tr className="bg-gray-100">
                     <th className="text-primary font-semibold px-4 py-3"></th>
-                    <th className="text-primary font-semibold px-4 py-3">Player Name</th>
-                    <th className="text-primary font-semibold px-4 py-3">Sport</th>
-                    <th className="text-primary font-semibold px-4 py-3">Age</th>
-                    <th className="text-primary font-semibold px-4 py-3">Doctor Name</th>
-                    <th className="text-primary font-semibold px-4 py-3">Specialization</th>
+                    <th className="text-primary font-semibold px-4 py-3">
+                      Player Name
+                    </th>
+                    <th className="text-primary font-semibold px-4 py-3">
+                      Sport
+                    </th>
+                    <th className="text-primary font-semibold px-4 py-3">
+                      Age
+                    </th>
+                    <th className="text-primary font-semibold px-4 py-3">
+                      Doctor Name
+                    </th>
+                    <th className="text-primary font-semibold px-4 py-3">
+                      Specialization
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -128,12 +133,22 @@ function PlayerDoctor() {
                       key={index}
                       className="hover:bg-gray-200 transition-colors border-b border-gray-200"
                     >
-                      <td className="px-4 py-3 text-gray-600">{player.player_id}</td>
-                      <td className="px-4 py-3 font-medium text-gray-800">{player.p_f_name} {player.p_l_name}</td>
-                      <td className="px-4 py-3 text-gray-600">{player.sport}</td>
+                      <td className="px-4 py-3 text-gray-600">
+                        {player.player_id}
+                      </td>
+                      <td className="px-4 py-3 font-medium text-gray-800">
+                        {player.p_f_name} {player.p_l_name}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">
+                        {player.sport}
+                      </td>
                       <td className="px-4 py-3 text-gray-600">{player.age}</td>
-                      <td className="px-4 py-3 text-gray-600">{player.first_name} {player.last_name}</td>
-                      <td className="px-4 py-3 text-gray-600">{player.specialization}</td>
+                      <td className="px-4 py-3 text-gray-600">
+                        {player.first_name} {player.last_name}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">
+                        {player.specialization}
+                      </td>
                       <td className="px-4 py-3">
                         <div className="flex space-x-2">
                           <button
@@ -159,13 +174,12 @@ function PlayerDoctor() {
         </div>
       </div>
 
-      <h1>doc:{selectedDoctorId} player:{selectedPlayerId}</h1>
+      <h1>
+        doc:{selectedDoctorId} player:{selectedPlayerId}
+      </h1>
 
       {isFormVisible && (
-        <PlayerDoctorForm
-          onClose={handleClose}
-          onSubmit={handleFormSubmit}
-        />
+        <PlayerDoctorForm onClose={handleClose} onSubmit={handleFormSubmit} />
       )}
     </div>
   );

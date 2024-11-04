@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import moment from "moment";
-import { PlayerForm } from './PlayerForm';
+import { PlayerForm } from "./PlayerForm";
 
 function Players() {
   const [data, setData] = useState([]);
@@ -13,7 +13,7 @@ function Players() {
 
   const fetchPlayers = async () => {
     try {
-      const res = await fetch('http://localhost:5000/Players');
+      const res = await fetch("http://localhost:5000/Players");
       const players = await res.json();
       setData(players);
     } catch (err) {
@@ -35,12 +35,12 @@ function Players() {
     if (window.confirm("Are you sure you want to delete this player?")) {
       try {
         const res = await fetch(`http://localhost:5000/Players/${player_id}`, {
-          method: 'DELETE',
+          method: "DELETE",
         });
 
         if (!res.ok) {
           const result = await res.json();
-          throw new Error(result.error || 'Failed to delete player');
+          throw new Error(result.error || "Failed to delete player");
         }
 
         console.log(`Player with ID ${player_id} deleted successfully`);
@@ -85,11 +85,21 @@ function Players() {
                 <thead>
                   <tr className="bg-gray-100">
                     <th className="text-primary font-semibold px-4 py-3">ID</th>
-                    <th className="text-primary font-semibold px-4 py-3">Name</th>
-                    <th className="text-primary font-semibold px-4 py-3">Sport</th>
-                    <th className="text-primary font-semibold px-4 py-3">Date of Birth</th>
-                    <th className="text-primary font-semibold px-4 py-3">Age</th>
-                    <th className="text-primary font-semibold px-4 py-3">Actions</th>
+                    <th className="text-primary font-semibold px-4 py-3">
+                      Name
+                    </th>
+                    <th className="text-primary font-semibold px-4 py-3">
+                      Sport
+                    </th>
+                    <th className="text-primary font-semibold px-4 py-3">
+                      Date of Birth
+                    </th>
+                    <th className="text-primary font-semibold px-4 py-3">
+                      Age
+                    </th>
+                    <th className="text-primary font-semibold px-4 py-3">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -98,9 +108,15 @@ function Players() {
                       key={index}
                       className="hover:bg-gray-200 transition-colors border-b border-gray-200"
                     >
-                      <td className="px-4 py-3 text-gray-600">{player.player_id}</td>
-                      <td className="px-4 py-3 font-medium text-gray-800">{player.first_name} {player.last_name}</td>
-                      <td className="px-4 py-3 text-gray-600">{player.sport}</td>
+                      <td className="px-4 py-3 text-gray-600">
+                        {player.player_id}
+                      </td>
+                      <td className="px-4 py-3 font-medium text-gray-800">
+                        {player.first_name} {player.last_name}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">
+                        {player.sport}
+                      </td>
                       <td className="px-4 py-3 text-gray-600">
                         {moment(player.date_of_birth).format("DD/MM/YYYY")}
                       </td>
