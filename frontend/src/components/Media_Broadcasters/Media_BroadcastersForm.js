@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import moment from 'moment';
 
 export function Media_BroadcastersForm({ onClose, onSubmit, broadcaster = {} }) {
     const [formData, setFormData] = useState({
@@ -8,7 +7,7 @@ export function Media_BroadcastersForm({ onClose, onSubmit, broadcaster = {} }) 
         monthly_viewers: broadcaster?.monthly_viewers || '',
     });
 
-    const [error, setError] = useState('');
+    const [errors, setErrors] = useState({});
     const isEditMode = Boolean(broadcaster?.broadcaster_id);
 
     useEffect(() => {
@@ -23,13 +22,30 @@ export function Media_BroadcastersForm({ onClose, onSubmit, broadcaster = {} }) 
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+
+        // Validate alphabet-only input for 'broadcaster_name' and 'city'
+        if (name === 'broadcaster_name' || name === 'city') {
+            if (/^[A-Za-z\s]*$/.test(value)) {
+                setFormData({ ...formData, [name]: value });
+                setErrors({ ...errors, [name]: '' }); // Clear error if input is valid
+            } else {
+                setErrors({
+                    ...errors,
+                    [name]: 'Only alphabets and spaces are allowed',
+                });
+            }
+        } else {
+            setFormData({ ...formData, [name]: value });
+            setErrors({ ...errors, [name]: '' }); // Clear error for other fields
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
-        console.log(`${isEditMode ? 'Updating' : 'Adding'} broadcaster data:`, formData);
+        if (Object.values(errors).some((error) => error)) {
+            setErrors({ ...errors, form: 'Please fix the errors above' });
+            return;
+        }
 
         try {
             const response = await fetch(
@@ -55,7 +71,7 @@ export function Media_BroadcastersForm({ onClose, onSubmit, broadcaster = {} }) 
             onSubmit(); // Notify parent component of success
         } catch (err) {
             console.error('Error:', err);
-            setError(err.message || 'An unexpected error occurred');
+            setErrors({ ...errors, form: err.message || 'An unexpected error occurred' });
         }
     };
 
@@ -66,35 +82,47 @@ export function Media_BroadcastersForm({ onClose, onSubmit, broadcaster = {} }) 
                     {isEditMode ? 'Edit Broadcaster' : 'Add New Broadcaster'}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <input
-                        type="text"
-                        name="broadcaster_name"
-                        placeholder="Broadcaster Name"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={formData.broadcaster_name}
-                        onChange={handleChange}
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="city"
-                        placeholder="City"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={formData.city}
-                        onChange={handleChange}
-                        required
-                    />
-                    <input
-                        type="number"
-                        name="monthly_viewers"
-                        placeholder="Monthly Viewers"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={formData.monthly_viewers}
-                        onChange={handleChange}
-                        required
-                    />
+                    <div>
+                        <input
+                            type="text"
+                            name="broadcaster_name"
+                            placeholder="Broadcaster Name"
+                            className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
+                            value={formData.broadcaster_name}
+                            onChange={handleChange}
+                            required
+                        />
+                        {errors.broadcaster_name && (
+                            <div className="text-red-500">{errors.broadcaster_name}</div>
+                        )}
+                    </div>
+                    <div>
+                        <input
+                            type="text"
+                            name="city"
+                            placeholder="City"
+                            className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
+                            value={formData.city}
+                            onChange={handleChange}
+                            required
+                        />
+                        {errors.city && (
+                            <div className="text-red-500">{errors.city}</div>
+                        )}
+                    </div>
+                    <div>
+                        <input
+                            type="number"
+                            name="monthly_viewers"
+                            placeholder="Monthly Viewers"
+                            className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
+                            value={formData.monthly_viewers}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
 
-                    {error && <div className="text-red-500">{error}</div>} {/* Display error message */}
+                    {errors.form && <div className="text-red-500">{errors.form}</div>} {/* Display form-level error */}
 
                     <div className="flex justify-end space-x-2 mt-4">
                         <button

@@ -1,31 +1,56 @@
 import React, { useState } from 'react';
-import moment from 'moment';
 
 export function SponsorForm({ onClose, onSubmit, sponsor = {} }) {
     const [sponsorData, setSponsorData] = useState({
-        sponsor_id: sponsor?.sponsor_id || '', // Use optional chaining
+        sponsor_id: sponsor?.sponsor_id || '', 
         name: sponsor?.sponsor_name || '',
-        
         amount: sponsor?.sponsorship_amount || '',
     });
 
-    const [error, setError] = useState('');
-    const isEditMode = Boolean(sponsor?.sponsor_id); // Use optional chaining
+    const [errors, setErrors] = useState({});
+    const isEditMode = Boolean(sponsor?.sponsor_id);
 
     const handleChange = (e) => {
-        setSponsorData({ ...sponsorData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+
+        // Validate name to contain only alphabets and spaces
+        if (name === 'name') {
+            if (/^[A-Za-z\s]*$/.test(value)) {
+                setSponsorData({ ...sponsorData, [name]: value });
+                setErrors({ ...errors, name: '' }); // Clear error if valid
+            } else {
+                setErrors({ ...errors, name: 'Only alphabets and spaces are allowed' });
+            }
+        }
+
+        // Validate amount to contain only numeric values
+        else if (name === 'amount') {
+            if (/^\d*$/.test(value)) {
+                setSponsorData({ ...sponsorData, [name]: value });
+                setErrors({ ...errors, amount: '' }); // Clear error if valid
+            } else {
+                setErrors({ ...errors, amount: 'Only numeric values are allowed' });
+            }
+        } else {
+            setSponsorData({ ...sponsorData, [name]: value });
+            setErrors({ ...errors, [name]: '' });
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
+        if (Object.values(errors).some((error) => error)) {
+            setErrors({ ...errors, form: 'Please fix the errors above' });
+            return;
+        }
+
         console.log(`${isEditMode ? 'Updating' : 'Adding'} sponsor data:`, sponsorData);
 
         try {
             const response = await fetch(
                 `http://localhost:5000/Sponsors${isEditMode ? `/${sponsor.sponsor_id}` : ''}`,
                 {
-                    method: isEditMode ? 'PUT' : 'POST', // Use PUT for edit, POST for new sponsor
+                    method: isEditMode ? 'PUT' : 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -41,11 +66,11 @@ export function SponsorForm({ onClose, onSubmit, sponsor = {} }) {
             }
 
             console.log(`${isEditMode ? 'Sponsor updated' : 'Sponsor added'} successfully:`, result);
-            setSponsorData({ sponsor_id: '', name: '', amount: '' }); // Reset form on success
-            onSubmit(); // Notify parent component of success
+            setSponsorData({ sponsor_id: '', name: '', amount: '' });
+            onSubmit();
         } catch (err) {
-            console.error('Error:', err); // Log the full error object
-            setError(err.message || 'An unexpected error occurred');
+            console.error('Error:', err);
+            setErrors({ ...errors, form: err.message || 'An unexpected error occurred' });
         }
     };
 
@@ -56,16 +81,6 @@ export function SponsorForm({ onClose, onSubmit, sponsor = {} }) {
                     {isEditMode ? 'Edit Sponsor' : 'Add New Sponsor'}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* <input
-                        type="text"
-                        name="sponsor_id"
-                        placeholder="Sponsor ID"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={sponsorData.sponsor_id}
-                        onChange={handleChange}
-                        required
-                        disabled={isEditMode} // Disable ID input for edit mode
-                    /> */}
                     <input
                         type="text"
                         name="name"
@@ -75,6 +90,8 @@ export function SponsorForm({ onClose, onSubmit, sponsor = {} }) {
                         onChange={handleChange}
                         required
                     />
+                    {errors.name && <div className="text-red-500">{errors.name}</div>} {/* Display name error */}
+
                     <input
                         type="text"
                         name="amount"
@@ -84,9 +101,9 @@ export function SponsorForm({ onClose, onSubmit, sponsor = {} }) {
                         onChange={handleChange}
                         required
                     />
-                    
+                    {errors.amount && <div className="text-red-500">{errors.amount}</div>} {/* Display amount error */}
 
-                    {error && <div className="text-red-500">{error}</div>} {/* Display error message */}
+                    {errors.form && <div className="text-red-500">{errors.form}</div>} {/* Display form-level error */}
 
                     <div className="flex justify-end space-x-2 mt-4">
                         <button
@@ -105,3 +122,5 @@ export function SponsorForm({ onClose, onSubmit, sponsor = {} }) {
         </div>
     );
 }
+
+export default SponsorForm;

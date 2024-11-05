@@ -3,7 +3,7 @@ import moment from 'moment';
 
 export function Sports_FederationsForm({ onClose, onSubmit, federation = {} }) {
     const currentYear = new Date().getFullYear();
-    const yearOptions = Array.from({ length: 100 }, (_, index) => currentYear - index); // Generates the last 100 years
+    const yearOptions = Array.from({ length: 100 }, (_, index) => currentYear - index);
 
     const [federationData, setFederationData] = useState({
         federation_id: federation?.federation_id || '',
@@ -18,7 +18,26 @@ export function Sports_FederationsForm({ onClose, onSubmit, federation = {} }) {
     const isEditMode = Boolean(federation?.federation_id);
 
     const handleChange = (e) => {
-        setFederationData({ ...federationData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+
+        // Validation for Federation Name and Country fields (only alphabets allowed)
+        if (name === 'federation_name' || name === 'country') {
+            if (!/^[a-zA-Z\s]*$/.test(value)) {
+                setError('Only alphabets are allowed for Federation Name and Country');
+                return;
+            }
+        }
+
+        // Validation for Contact Number field (only numbers and hyphens allowed)
+        if (name === 'contact_number') {
+            if (!/^[0-9-]*$/.test(value)) {
+                setError('Only numbers and hyphens are allowed for Contact Number');
+                return;
+            }
+        }
+
+        setError('');
+        setFederationData({ ...federationData, [name]: value });
     };
 
     const handleSubmit = async (e) => {

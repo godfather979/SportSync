@@ -9,16 +9,50 @@ export function RefereeForm({ onClose, onSubmit, referee = {} }) {
         experience: referee?.experience || '',
     });
 
-    const [error, setError] = useState('');
+    const [error, setError] = useState({
+        first_name: '',
+        last_name: '',
+        experience: '',
+    });
+
     const isEditMode = Boolean(referee?.referee_id);
 
     const handleChange = (e) => {
-        setRefereeData({ ...refereeData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        let errorMessage = '';
+
+        // Validate inputs based on field name
+        if (name === 'first_name' || name === 'last_name') {
+            if (!/^[a-zA-Z]*$/.test(value) && value !== '') {
+                errorMessage = 'Only alphabetic characters are allowed.';
+            }
+        } else if (name === 'experience') {
+            if (!/^\d*$/.test(value) && value !== '') {
+                errorMessage = 'Only numeric values are allowed.';
+            }
+        }
+
+        setRefereeData({ ...refereeData, [name]: value });
+        setError({ ...error, [name]: errorMessage });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
+        const hasErrors = Object.values(error).some(err => err !== '');
+        if (hasErrors) {
+            setError({
+                first_name: error.first_name || '',
+                last_name: error.last_name || '',
+                experience: error.experience || '',
+            });
+            return;
+        }
+        setError({
+            first_name: '',
+            last_name: '',
+            experience: '',
+        });
+
         console.log(`${isEditMode ? 'Updating' : 'Adding'} referee data:`, refereeData);
 
         try {
@@ -45,7 +79,7 @@ export function RefereeForm({ onClose, onSubmit, referee = {} }) {
             onSubmit();
         } catch (err) {
             console.error('Error:', err);
-            setError(err.message || 'An unexpected error occurred');
+            setError({ ...error, general: err.message || 'An unexpected error occurred' });
         }
     };
 
@@ -56,36 +90,44 @@ export function RefereeForm({ onClose, onSubmit, referee = {} }) {
                     {isEditMode ? 'Edit Referee' : 'Add New Referee'}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <input
-                        type="text"
-                        name="first_name"
-                        placeholder="First Name"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={refereeData.first_name}
-                        onChange={handleChange}
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="last_name"
-                        placeholder="Last Name"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={refereeData.last_name}
-                        onChange={handleChange}
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="experience"
-                        placeholder="Experience"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={refereeData.experience}
-                        onChange={handleChange}
-                    />
-                    
-                  
+                    <div>
+                        <input
+                            type="text"
+                            name="first_name"
+                            placeholder="First Name"
+                            className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
+                            value={refereeData.first_name}
+                            onChange={handleChange}
+                            required
+                        />
+                        {error.first_name && <div className="text-red-500">{error.first_name}</div>}
+                    </div>
 
-                    {error && <div className="text-red-500">{error}</div>}
+                    <div>
+                        <input
+                            type="text"
+                            name="last_name"
+                            placeholder="Last Name"
+                            className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
+                            value={refereeData.last_name}
+                            onChange={handleChange}
+                            required
+                        />
+                        {error.last_name && <div className="text-red-500">{error.last_name}</div>}
+                    </div>
+
+                    <div>
+                        <input
+                            type="text"
+                            name="experience"
+                            placeholder="Experience"
+                            className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
+                            value={refereeData.experience}
+                            onChange={handleChange}
+                            required
+                        />
+                        {error.experience && <div className="text-red-500">{error.experience}</div>}
+                    </div>
 
                     <div className="flex justify-end space-x-2 mt-4">
                         <button

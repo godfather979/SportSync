@@ -2,30 +2,59 @@ import React, { useState } from 'react';
 
 export function CoachForm({ onClose, onSubmit, coach = {} }) {
     const [coachData, setCoachData] = useState({
-        coach_id: coach?.coach_id || '', // Use optional chaining
+        coach_id: coach?.coach_id || '',
         first_name: coach?.first_name || '',
         last_name: coach?.last_name || '',
-        experience: coach?.experience || '', // Changed to experience
-        sport: coach?.sport || '' // Add sport field
+        experience: coach?.experience || '',
+        sport: coach?.sport || ''
     });
 
-    const [error, setError] = useState('');
-    const isEditMode = Boolean(coach?.coach_id); // Use optional chaining
+    const [error, setError] = useState({
+        first_name: '',
+        last_name: '',
+        experience: '',
+        sport: '',
+        general: ''
+    });
+    const isEditMode = Boolean(coach?.coach_id);
 
     const handleChange = (e) => {
-        setCoachData({ ...coachData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        let errorMessage = '';
+
+        // Validate inputs based on field name
+        if (name === 'first_name' || name === 'last_name') {
+            if (!/^[a-zA-Z]*$/.test(value) && value !== '') {
+                errorMessage = 'Only alphabetic characters are allowed.';
+            }
+        } else if (name === 'experience') {
+            if (!/^\d*$/.test(value) && value !== '') {
+                errorMessage = 'Only numeric values are allowed.';
+            }
+        } else if (name === 'sport') {
+            if (!/^[a-zA-Z\s]*$/.test(value) && value !== '') {
+                errorMessage = 'Only alphabetic characters are allowed.';
+            }
+        }
+
+        setCoachData({ ...coachData, [name]: value });
+        setError({ ...error, [name]: errorMessage });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
+        const hasErrors = Object.values(error).some(err => err !== '');
+        if (hasErrors) {
+            return; // Prevent form submission if there are errors
+        }
+
         console.log(`${isEditMode ? 'Updating' : 'Adding'} coach data:`, coachData);
 
         try {
             const response = await fetch(
                 `http://localhost:5000/Coaches${isEditMode ? `/${coach.coach_id}` : ''}`,
                 {
-                    method: isEditMode ? 'PUT' : 'POST', // Use PUT for edit, POST for new coach
+                    method: isEditMode ? 'PUT' : 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -41,11 +70,12 @@ export function CoachForm({ onClose, onSubmit, coach = {} }) {
             }
 
             console.log(`${isEditMode ? 'Coach updated' : 'Coach added'} successfully:`, result);
-            setCoachData({ coach_id: '', first_name: '', last_name: '', experience: '', sport: '' }); // Reset form on success
-            onSubmit(); // Notify parent component of success
+            setCoachData({ coach_id: '', first_name: '', last_name: '', experience: '', sport: '' });
+            setError({ first_name: '', last_name: '', experience: '', sport: '', general: '' }); // Reset errors on success
+            onSubmit();
         } catch (err) {
-            console.error('Error:', err); // Log the full error object
-            setError(err.message || 'An unexpected error occurred');
+            console.error('Error:', err);
+            setError({ ...error, general: err.message || 'An unexpected error occurred' });
         }
     };
 
@@ -56,44 +86,59 @@ export function CoachForm({ onClose, onSubmit, coach = {} }) {
                     {isEditMode ? 'Edit Coach' : 'Add New Coach'}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <input
-                        type="text"
-                        name="first_name"
-                        placeholder="First Name"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={coachData.first_name}
-                        onChange={handleChange}
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="last_name"
-                        placeholder="Last Name"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={coachData.last_name}
-                        onChange={handleChange}
-                        required
-                    />
-                    <input
-                        type="number"
-                        name="experience"
-                        placeholder="Years of Experience"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={coachData.experience}
-                        onChange={handleChange}
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="sport"
-                        placeholder="Sport"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={coachData.sport}
-                        onChange={handleChange}
-                        required
-                    />
+                    <div>
+                        <input
+                            type="text"
+                            name="first_name"
+                            placeholder="First Name"
+                            className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
+                            value={coachData.first_name}
+                            onChange={handleChange}
+                            required
+                        />
+                        {error.first_name && <div className="text-red-500">{error.first_name}</div>}
+                    </div>
 
-                    {error && <div className="text-red-500">{error}</div>} {/* Display error message */}
+                    <div>
+                        <input
+                            type="text"
+                            name="last_name"
+                            placeholder="Last Name"
+                            className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
+                            value={coachData.last_name}
+                            onChange={handleChange}
+                            required
+                        />
+                        {error.last_name && <div className="text-red-500">{error.last_name}</div>}
+                    </div>
+
+                    <div>
+                        <input
+                            type="number"
+                            name="experience"
+                            placeholder="Years of Experience"
+                            className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
+                            value={coachData.experience}
+                            onChange={handleChange}
+                            required
+                        />
+                        {error.experience && <div className="text-red-500">{error.experience}</div>}
+                    </div>
+
+                    <div>
+                        <input
+                            type="text"
+                            name="sport"
+                            placeholder="Sport"
+                            className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
+                            value={coachData.sport}
+                            onChange={handleChange}
+                            required
+                        />
+                        {error.sport && <div className="text-red-500">{error.sport}</div>}
+                    </div>
+
+                    {error.general && <div className="text-red-500">{error.general}</div>}
 
                     <div className="flex justify-end space-x-2 mt-4">
                         <button

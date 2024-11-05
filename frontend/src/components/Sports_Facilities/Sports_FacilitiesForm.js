@@ -9,16 +9,43 @@ export function Sports_FacilitiesForm({ onClose, onSubmit, facility = {} }) {
         facility_type: facility?.facility_type || ''
     });
 
-    const [error, setError] = useState('');
+    const [errors, setErrors] = useState({
+        facility_name: '',
+        location: '',
+        capacity: ''
+    });
     const isEditMode = Boolean(facility?.facility_id);
 
     const handleChange = (e) => {
-        setFacilityData({ ...facilityData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        let error = '';
+
+        if (name === 'facility_name' || name === 'location') {
+            if (/^[A-Za-z\s]*$/.test(value)) {
+                setFacilityData({ ...facilityData, [name]: value });
+            } else {
+                error = `${name === 'facility_name' ? 'Facility Name' : 'Location'} should only contain letters.`;
+            }
+        } else if (name === 'capacity') {
+            if (/^\d*$/.test(value)) {
+                setFacilityData({ ...facilityData, [name]: value });
+            } else {
+                error = 'Capacity should only contain numbers.';
+            }
+        } else {
+            setFacilityData({ ...facilityData, [name]: value });
+        }
+
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            [name]: error
+        }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
+        setErrors({ facility_name: '', location: '', capacity: '' });
+
         console.log(`${isEditMode ? 'Updating' : 'Adding'} facility data:`, facilityData);
 
         try {
@@ -45,7 +72,10 @@ export function Sports_FacilitiesForm({ onClose, onSubmit, facility = {} }) {
             onSubmit();
         } catch (err) {
             console.error('Error:', err);
-            setError(err.message || 'An unexpected error occurred');
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                form: err.message || 'An unexpected error occurred'
+            }));
         }
     };
 
@@ -56,42 +86,57 @@ export function Sports_FacilitiesForm({ onClose, onSubmit, facility = {} }) {
                     {isEditMode ? 'Edit Facility' : 'Add New Facility'}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <input
-                        type="text"
-                        name="facility_name"
-                        placeholder="Facility Name"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={facilityData.facility_name}
-                        onChange={handleChange}
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="location"
-                        placeholder="Location"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={facilityData.location}
-                        onChange={handleChange}
-                        required
-                    />
-                    <input
-                        type="number"
-                        name="capacity"
-                        placeholder="Capacity"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={facilityData.capacity}
-                        onChange={handleChange}
-                    />
-                    <input
-                        type="text"
-                        name="facility_type"
-                        placeholder="Facility Type (Indoor/Outdoor)"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={facilityData.facility_type}
-                        onChange={handleChange}
-                    />
+                    <div>
+                        <input
+                            type="text"
+                            name="facility_name"
+                            placeholder="Facility Name"
+                            className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
+                            value={facilityData.facility_name}
+                            onChange={handleChange}
+                            required
+                        />
+                        {errors.facility_name && <div className="text-red-500">{errors.facility_name}</div>}
+                    </div>
+                    
+                    <div>
+                        <input
+                            type="text"
+                            name="location"
+                            placeholder="Location"
+                            className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
+                            value={facilityData.location}
+                            onChange={handleChange}
+                            required
+                        />
+                        {errors.location && <div className="text-red-500">{errors.location}</div>}
+                    </div>
 
-                    {error && <div className="text-red-500">{error}</div>}
+                    <div>
+                        <input
+                            type="number"
+                            name="capacity"
+                            placeholder="Capacity"
+                            className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
+                            value={facilityData.capacity}
+                            onChange={handleChange}
+                            required
+                        />
+                        {errors.capacity && <div className="text-red-500">{errors.capacity}</div>}
+                    </div>
+
+                    <div>
+                        <input
+                            type="text"
+                            name="facility_type"
+                            placeholder="Facility Type (Indoor/Outdoor)"
+                            className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
+                            value={facilityData.facility_type}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    {errors.form && <div className="text-red-500">{errors.form}</div>}
 
                     <div className="flex justify-end space-x-2 mt-4">
                         <button
