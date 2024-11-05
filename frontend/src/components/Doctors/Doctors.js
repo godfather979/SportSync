@@ -1,4 +1,3 @@
-// Doctors.js
 import { useEffect, useState } from "react";
 import { DoctorForm } from './DoctorForm';
 
@@ -14,10 +13,14 @@ function Doctors() {
   const fetchDoctors = async () => {
     try {
       const res = await fetch('http://localhost:5000/Doctors');
+      if (!res.ok) {
+        throw new Error("Network response was not ok");
+      }
       const doctors = await res.json();
-      setData(doctors);
+      setData(Array.isArray(doctors) ? doctors : []);
     } catch (err) {
       console.error("Error fetching doctors:", err);
+      setData([]); // Ensure data is an empty array on error
     }
   };
 
@@ -88,7 +91,6 @@ function Doctors() {
                     <th className="text-primary font-semibold px-4 py-3">Name</th>
                     <th className="text-primary font-semibold px-4 py-3">Specialization</th>
                     <th className="text-primary font-semibold px-4 py-3">Institute ID</th>
-
                     <th className="text-primary font-semibold px-4 py-3">Actions</th>
                   </tr>
                 </thead>
@@ -102,7 +104,6 @@ function Doctors() {
                       <td className="px-4 py-3 font-medium text-gray-800">{doctor.first_name} {doctor.last_name}</td>
                       <td className="px-4 py-3 text-gray-600">{doctor.specialization}</td>
                       <td className="px-4 py-3 text-gray-600">{doctor.institute_id}</td>
-                          
                       <td className="px-4 py-3">
                         <div className="flex space-x-2">
                           <button

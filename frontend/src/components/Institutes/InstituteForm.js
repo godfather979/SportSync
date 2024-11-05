@@ -28,12 +28,37 @@ export function InstituteForm({ onClose, onSubmit, institute = {} }) {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+        
+        // Validate input on change
+        if (name !== 'ranking' && name !== 'established_year') {
+            validateInput(name, value);
+        }
+    };
+
+    const validateInput = (name, value) => {
+        const regex = /^[A-Za-z\s]+$/; // Regex to match only alphabetic characters and spaces
+        if (!regex.test(value) && value.trim() !== '') {
+            setError(`${name} can only contain letters and spaces.`);
+            return false;
+        }
+        setError(''); // Clear error if valid
+        return true;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
+        setError(''); // Clear previous errors
         console.log(`${isEditMode ? 'Updating' : 'Adding'} institute data:`, formData);
+
+        // Validate inputs before submission
+        const isInstituteNameValid = validateInput('Institute Name', formData.institute_name);
+        const isCityValid = validateInput('City', formData.city);
+        const isSportsTypeValid = validateInput('Sports Type', formData.sports_type);
+        
+        // Stop submission if validation fails
+        if (!isInstituteNameValid || !isCityValid || !isSportsTypeValid) {
+            return;
+        }
 
         try {
             const response = await fetch(
@@ -99,7 +124,7 @@ export function InstituteForm({ onClose, onSubmit, institute = {} }) {
                     <input
                         type="text"
                         name="sports_type"
-                        placeholder="Sports Type"
+                        placeholder="Sports Type Indoor/Outdoor"
                         className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
                         value={formData.sports_type}
                         onChange={handleChange}

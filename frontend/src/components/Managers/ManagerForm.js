@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import moment from 'moment';
 
 const ManagerForm = ({ onClose, onSubmit, manager = {} }) => {
     const [formData, setFormData] = useState({
         first_name: manager?.first_name || '',
         last_name: manager?.last_name || '',
-        
     });
 
     const [error, setError] = useState('');
@@ -16,7 +14,6 @@ const ManagerForm = ({ onClose, onSubmit, manager = {} }) => {
             setFormData({
                 first_name: manager.first_name || '',
                 last_name: manager.last_name || '',
-               
             });
         }
     }, [manager]);
@@ -24,12 +21,31 @@ const ManagerForm = ({ onClose, onSubmit, manager = {} }) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+        validateInput(name, value); // Validate input on change
+    };
+
+    const validateInput = (name, value) => {
+        const regex = /^[A-Za-z\s]+$/; // Regex to match only alphabetic characters and spaces
+        if (!regex.test(value) && value.trim() !== '') {
+            setError(`${name} can only contain letters and spaces.`);
+            return false;
+        }
+        setError(''); // Clear the error if valid
+        return true;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         console.log(`${isEditMode ? 'Updating' : 'Adding'} manager data:`, formData);
+
+        // Validate input
+        const isFirstNameValid = validateInput('First Name', formData.first_name);
+        const isLastNameValid = validateInput('Last Name', formData.last_name);
+        
+        if (!isFirstNameValid || !isLastNameValid) {
+            return; // Stop submission if validation fails
+        }
 
         try {
             const response = await fetch(
@@ -84,8 +100,6 @@ const ManagerForm = ({ onClose, onSubmit, manager = {} }) => {
                         onChange={handleChange}
                         required
                     />
-                   
-
                     {error && <div className="text-red-500">{error}</div>} {/* Display error message */}
 
                     <div className="flex justify-end space-x-2 mt-4">

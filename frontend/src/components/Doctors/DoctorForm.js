@@ -15,7 +15,20 @@ export function DoctorForm({ onClose, onSubmit, doctor = {} }) {
     const isEditMode = Boolean(doctor?.doctor_id);
 
     const handleChange = (e) => {
-        setDoctorData({ ...doctorData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+
+        // Validate alphabetic input for first_name, last_name, and specialization
+        if (['first_name', 'last_name', 'specialization'].includes(name)) {
+            const regex = /^[A-Za-z\s]*$/; // Regex for alphabets and spaces
+            if (!regex.test(value)) {
+                setError(`Invalid input for ${name.replace('_', ' ')}. Only alphabets are allowed.`);
+                return;
+            } else {
+                setError(''); // Clear error if valid input
+            }
+        }
+
+        setDoctorData({ ...doctorData, [name]: value });
     };
 
     const handleSubmit = async (e) => {
@@ -92,7 +105,6 @@ export function DoctorForm({ onClose, onSubmit, doctor = {} }) {
                         value={doctorData.institute_id}
                         onChange={handleChange}
                     />
-                  
 
                     {error && <div className="text-red-500">{error}</div>}
 
@@ -104,7 +116,7 @@ export function DoctorForm({ onClose, onSubmit, doctor = {} }) {
                         >
                             Cancel
                         </button>
-                        <button type="submit" className="btn btn-primary">
+                        <button type="submit" className="btn btn-primary" disabled={!!error}>
                             {isEditMode ? 'Update' : 'Save'}
                         </button>
                     </div>

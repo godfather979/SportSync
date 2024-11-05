@@ -1157,6 +1157,28 @@ app.get("/players/count", async (req, res) => {
     return res.status(200).json(data);
   });
 });
+// Route to get match count
+app.get("/matches/count", async (req, res) => {
+  const sql = "SELECT COUNT(*) AS count FROM Matches";
+  db.query(sql, (err, data) => {
+    if (err) {
+      console.error("Error fetching match count:", err.message);
+      return res.status(500).json({ error: "Failed to fetch match count" });
+    }
+    return res.status(200).json(data);
+  });
+});
+// Route to get media broadcasters count
+app.get("/media_broadcasters/count", async (req, res) => {
+  const sql = "SELECT COUNT(*) AS count FROM Media_Broadcasters";
+  db.query(sql, (err, data) => {
+    if (err) {
+      console.error("Error fetching media broadcasters count:", err.message);
+      return res.status(500).json({ error: "Failed to fetch media broadcasters count" });
+    }
+    return res.status(200).json(data);
+  });
+});
 
 app.listen(5000, () => {
   console.log("Listening on port 5000");

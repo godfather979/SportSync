@@ -2,30 +2,59 @@
 import { TypewriterEffect } from "./ui/typewriter-effect";
 import { motion } from "framer-motion";
 import { PlayerForm } from "./Player/PlayerForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 export function HomePage() {
-  const [playerCount, setPlayerCount] = useState(null); //refer this
-  const [matchCount, setMatchCount] = useState(null); //ye teen tujhe karna hai
+  const [playerCount, setPlayerCount] = useState(null);
+  const [matchCount, setMatchCount] = useState(null);
   const [eventCount, setEventCount] = useState(null);
   const [mediaCount, setMediaCount] = useState(null);
 
   useEffect(() => {
-    //fetchPlayerCount jaise baki 3 function banenge idhar daal de
     fetchPlayerCount();
+    fetchMatchCount();
+    fetchEventCount();
+    fetchMediaCount();
   }, []);
 
   const fetchPlayerCount = async () => {
-    //ye raha fetch karne
     try {
       const res = await fetch("http://localhost:5000/players/count");
       const players = await res.json();
-      console.log(players);
       setPlayerCount(players[0].count);
     } catch (err) {
-      console.error("Error fetching players:", err);
+      console.error("Error fetching player count:", err);
+    }
+  };
+
+  const fetchMatchCount = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/matches/count");
+      const data = await res.json();
+      setMatchCount(data[0].count);
+    } catch (err) {
+      console.error("Error fetching match count:", err);
+    }
+  };
+
+  const fetchEventCount = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/events/count");
+      const data = await res.json();
+      setEventCount(data[0].count);
+    } catch (err) {
+      console.error("Error fetching event count:", err);
+    }
+  };
+
+  const fetchMediaCount = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/media_broadcasters/count");
+      const data = await res.json();
+      setMediaCount(data[0].count);
+    } catch (err) {
+      console.error("Error fetching media broadcasters count:", err);
     }
   };
 
@@ -47,9 +76,9 @@ export function HomePage() {
 
   const stats = [
     { title: "Total Players", value: playerCount, icon: "👥" },
-    { title: "Matches", value: "12", icon: "🏆" },
-    { title: "Upcoming Events", value: "8", icon: "📅" },
-    { title: "Media Broadcasters", value: "45", icon: "📊" },
+    { title: "Matches", value: matchCount, icon: "🏆" },
+    { title: "Upcoming Events", value: eventCount, icon: "📅" },
+    { title: "Media Broadcasters", value: mediaCount, icon: "📊" },
   ];
 
   const recentActivities = [
@@ -92,9 +121,6 @@ export function HomePage() {
   };
 
   const handleClick = (index) => {
-    console.log(`Button clicked at index: ${index}`);
-    // Handle click based on index here
-
     if (index === 0) {
       navigateTo("/table/players");
     } else if (index === 1) {
@@ -102,12 +128,12 @@ export function HomePage() {
     } else if (index === 2) {
       navigateTo("/table/events");
     } else if (index === 3) {
-      navigateTo("/table/media_broadcasters"); // Example for index 3
+      navigateTo("/table/media_broadcasters");
     }
   };
 
   const navigateTo = (path) => {
-    navigate(path); // `path` is a string parameter, e.g., "/home" or "/profile"
+    navigate(path);
   };
 
   return (
@@ -153,7 +179,7 @@ export function HomePage() {
                 </span>
                 <div>
                   <h3 className="text-xl font-bold flex justify-self-center text-gray-800">
-                    {stat.value}
+                    {stat.value !== null ? stat.value : "Loading..."}
                   </h3>
                   <p className="text-gray-600">{stat.title}</p>
                 </div>

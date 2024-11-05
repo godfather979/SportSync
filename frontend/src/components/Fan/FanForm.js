@@ -1,30 +1,66 @@
-import React, { useState } from 'react';
-import moment from 'moment';
+import React, { useState, useEffect } from 'react';
 
 export function FanForm({ onClose, onSubmit, fan = {} }) {
     const [fanData, setFanData] = useState({
-        fan_id: fan?.fan_id || '', // Use optional chaining
+        fan_id: fan?.fan_id || '',
         first_name: fan?.first_name || '',
         last_name: fan?.last_name || '',
     });
 
-    const [error, setError] = useState('');
-    const isEditMode = Boolean(fan?.fan_id); // Use optional chaining
+    const [error, setError] = useState({});
+    const isEditMode = Boolean(fan?.fan_id);
+
+    useEffect(() => {
+        if (fan) {
+            setFanData({
+                fan_id: fan.fan_id || '',
+                first_name: fan.first_name || '',
+                last_name: fan.last_name || '',
+            });
+        }
+    }, [fan]);
 
     const handleChange = (e) => {
-        setFanData({ ...fanData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFanData({ ...fanData, [name]: value });
+
+        // Validate input on change
+        validateInput(name, value);
+    };
+
+    const validateInput = (name, value) => {
+        const regex = /^[a-zA-Z]+$/; // Regex to match only letters
+        if (name === 'first_name' || name === 'last_name') {
+            if (!value) {
+                setError((prev) => ({ ...prev, [name]: `${name.replace('_', ' ')} is required.` }));
+            } else if (!regex.test(value)) {
+                setError((prev) => ({ ...prev, [name]: `${name.replace('_', ' ')} must only contain letters.` }));
+            } else {
+                setError((prev) => ({ ...prev, [name]: '' })); // Clear error if valid
+            }
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
+        setError({}); // Clear previous errors
+
+        // Validate inputs before submission
+        validateInput('first_name', fanData.first_name);
+        validateInput('last_name', fanData.last_name);
+
+        // Check if there are any errors
+        if (error.first_name || error.last_name) {
+            return; // Stop submission if validation fails
+        }
+
         console.log(`${isEditMode ? 'Updating' : 'Adding'} fan data:`, fanData);
 
         try {
             const response = await fetch(
                 `http://localhost:5000/Fans${isEditMode ? `/${fan.fan_id}` : ''}`,
                 {
-                    method: isEditMode ? 'PUT' : 'POST', // Use PUT for edit, POST for new fan
+                    method: isEditMode ? 'PUT' : 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -43,8 +79,8 @@ export function FanForm({ onClose, onSubmit, fan = {} }) {
             setFanData({ fan_id: '', first_name: '', last_name: '' }); // Reset form on success
             onSubmit(); // Notify parent component of success
         } catch (err) {
-            console.error('Error:', err); // Log the full error object
-            setError(err.message || 'An unexpected error occurred');
+            console.error('Error:', err);
+            setError({ general: err.message || 'An unexpected error occurred' });
         }
     };
 
@@ -55,16 +91,6 @@ export function FanForm({ onClose, onSubmit, fan = {} }) {
                     {isEditMode ? 'Edit Fan' : 'Add New Fan'}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* <input
-                        type="text"
-                        name="fan_id"
-                        placeholder="Fan ID"
-                        className="w-full p-2 rounded-md border border-gray-300 bg-gray-200 text-black"
-                        value={fanData.fan_id}
-                        onChange={handleChange}
-                        required
-                        disabled={isEditMode} // Disable ID input for edit mode
-                    /> */}
                     <input
                         type="text"
                         name="first_name"
@@ -74,6 +100,8 @@ export function FanForm({ onClose, onSubmit, fan = {} }) {
                         onChange={handleChange}
                         required
                     />
+                    {error.first_name && <div className="text-red-500">{error.first_name}</div>} {/* Display error message */}
+
                     <input
                         type="text"
                         name="last_name"
@@ -83,9 +111,9 @@ export function FanForm({ onClose, onSubmit, fan = {} }) {
                         onChange={handleChange}
                         required
                     />
-                   
+                    {error.last_name && <div className="text-red-500">{error.last_name}</div>} {/* Display error message */}
 
-                    {error && <div className="text-red-500">{error}</div>} {/* Display error message */}
+                    {error.general && <div className="text-red-500">{error.general}</div>} {/* General error message */}
 
                     <div className="flex justify-end space-x-2 mt-4">
                         <button
@@ -104,3 +132,5 @@ export function FanForm({ onClose, onSubmit, fan = {} }) {
         </div>
     );
 }
+
+export default FanForm;
