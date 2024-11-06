@@ -63,14 +63,14 @@ export function SearchPlayerId({
 
   const fetchTables = async () => {
     try {
-      const res = await fetch("http://localhost:5000/player_id");
+      const res = await fetch("http://localhost:5000/Players");
       const tables = await res.json();
 
       console.log(tables);
 
       const playerData = tables.map((item) => ({
         value: item.player_id,
-        label: item.player_id,
+        label: item.first_name + " " + item.last_name,
       }));
 
       setTables(playerData);
@@ -107,18 +107,19 @@ export function SearchPlayerId({
           <Command>
             <CommandInput placeholder="Search player..." />
             <CommandList>
-              <CommandEmpty>No table found.</CommandEmpty>
+              <CommandEmpty>No player found.</CommandEmpty>
               <CommandGroup>
                 {tables.map((table) => (
                   <CommandItem
                     key={table.value}
                     value={table.value}
                     onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue);
-                      console.log(value);
-                      setOpen(false);
-                      setSelectedPlayerId(currentValue);
+                      const selectedValue = table.value;
+                      setValue(selectedValue === value ? "" : selectedValue);
+                      setSelectedPlayerId(selectedValue);
                       setSelectedDoctorId(0);
+                      setOpen(false);
+                      console.log("Updated selectedValue:", selectedValue);
                     }}
                   >
                     <Check
