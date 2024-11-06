@@ -21,6 +21,7 @@ import Matches from "./components/Matches/Matches";
 import Sponsors from "./components/Sponsors/Sponsors";
 import Sports_Facilities from "./components/Sports_Facilities/Sports_Facilities";
 import Sports_Federations from "./components/Sports_Federation/Sports_Federations";
+import { Logo } from "./Logo";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ const RoutesWeb = () => {
 
   return (
     <>
+      <Logo />
       {isTableRoute && <SearchTable />}
       {isRelationRoute && <SearchRelation />}
       <Routes>
