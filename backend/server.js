@@ -1176,7 +1176,9 @@ app.get("/players/:playerId/coaches/:coachId", (req, res) => {
   db.query(sql, queryParams, (err, data) => {
     if (err) {
       console.error("Error fetching player-coach data:", err.message);
-      return res.status(500).json({ error: "Failed to fetch player-coach data" });
+      return res
+        .status(500)
+        .json({ error: "Failed to fetch player-coach data" });
     }
 
     if (data.length === 0) {
@@ -1186,6 +1188,56 @@ app.get("/players/:playerId/coaches/:coachId", (req, res) => {
     return res.status(200).json(data);
   });
 });
+app.get("/players/:playerId/institutes/:instituteId", (req, res) => {
+  const player_id = parseInt(req.params.playerId, 10); // Ensure player ID is a number
+  const institute_id = parseInt(req.params.instituteId, 10); // Ensure institute ID is a number
+
+  let sql;
+  let queryParams = [];
+
+  // Query by institute_id only
+  if (institute_id !== 0 && player_id === 0) {
+    sql = `SELECT p.player_id, p.first_name AS p_f_name, p.last_name AS p_l_name, p.sport, p.age, i.institute_id, i.name AS institute_name, i.city
+           FROM PlayerView p
+           JOIN Player_Institute pi ON p.player_id = pi.player_id
+           JOIN Institutes i ON pi.institute_id = i.institute_id
+           WHERE i.institute_id=?;`;
+    queryParams = [institute_id];
+
+    // Query by player_id only
+  } else if (player_id !== 0 && institute_id === 0) {
+    sql = `SELECT p.player_id, p.first_name AS p_f_name, p.last_name AS p_l_name, p.sport, p.age, i.institute_id, i.name AS institute_name, i.city
+           FROM PlayerView p
+           JOIN Player_Institute pi ON p.player_id = pi.player_id
+           JOIN Institutes i ON pi.institute_id = i.institute_id
+           WHERE p.player_id=?;`;
+    queryParams = [player_id];
+
+    // Query by both player_id and institute_id
+  } else {
+    sql = `SELECT p.player_id, p.first_name AS p_f_name, p.last_name AS p_l_name, p.sport, p.age, i.institute_id, i.institute_name AS institute_name, i.city
+           FROM PlayerView p
+           JOIN Player_Institute pi ON p.player_id = pi.player_id
+           JOIN Institutes i ON pi.institute_id = i.institute_id;`;
+  }
+
+  // Execute the query
+  db.query(sql, queryParams, (err, data) => {
+    if (err) {
+      console.error("Error fetching player-institute data:", err.message);
+      return res
+        .status(500)
+        .json({ error: "Failed to fetch player-institute data" });
+    }
+
+    if (data.length === 0) {
+      return res.status(404).json({ error: "No matching records found" });
+    }
+
+    return res.status(200).json(data);
+  });
+});
+
 //route to get player count
 app.get("/players/count", async (req, res) => {
   const sql = "SELECT COUNT(*) AS count FROM Players";
@@ -1226,48 +1278,8 @@ app.get("/media_broadcasters/count", async (req, res) => {
 app.get("/playerdata", async (req, res) => {
   //   const sql =
 
-  // SELECT
-  // p.player_id,
-  // p.first_name AS p_f_name,
-  // p.last_name AS p_l_name,
-  // p.date_of_birth AS p_dob,
-  // p.sport AS p_sport,
-  // c.coach_id,
-  // c.first_name AS c_f_name,
-  // c.last_name AS c_l_name,
-  // c.experience AS c_experience,
-  // c.sport AS c_sport,
-  // f.fan_id,
-  // f.first_name AS f_f_name,
-  // f.last_name AS f_l_name,
-  // m.manager_id,
-  // m.first_name AS m_f_name,
-  // m.last_name AS m_l_name,
-  // i.institute_id,
-  // i.institute_name AS i_name,
-  // i.city AS i_city,
-  // i.ranking AS i_rank,
-  // i.sports_type AS i_sports_type,
-  // i.established_year AS i_year,
-
-  // FROM Players p
-  // LEFT JOIN Player_Coach pc ON p.player_id = pc.player_id
-  // LEFT JOIN Player_Fan pf ON p.player_id = pf.player_id
-  // LEFT JOIN Player_Manager pm ON p.player_id = pm.player_id
-  // LEFT JOIN Player_Institute pi ON p.player_id = pi.player_id
-  // LEFT JOIN Matches mt ON p.player_id = mt.player1_id
-  // LEFT JOIN Matches mt2 ON p.player_id = mt2.player2_id
-
-  // -- Joining respective tables
-  // LEFT JOIN Coaches c ON pc.coach_id = c.coach_id
-  // LEFT JOIN Fans f ON pf.fan_id = f.fan_id
-  // LEFT JOIN Managers m ON pm.manager_id = m.manager_id
-  // LEFT JOIN Institutes i ON pi.institute_id = i.institute_id
-
-  // WHERE p.player_id = 5;
-  // SELECT p.*, f.*, m.*, i.*, mt.*
   const sql = `
-  SELECT
+  SELECT DISTINCT
     p.player_id,
     p.first_name AS p_f_name,
     p.last_name AS p_l_name,
@@ -1290,14 +1302,14 @@ app.get("/playerdata", async (req, res) => {
     i.ranking AS i_rank,
     i.sports_type AS i_sports_type,
     i.established_year AS i_year
+    
 
 FROM Players p
 LEFT JOIN Player_Coach pc ON p.player_id = pc.player_id
 LEFT JOIN Player_Fan pf ON p.player_id = pf.player_id
 LEFT JOIN Player_Manager pm ON p.player_id = pm.player_id
 LEFT JOIN Player_Institute pi ON p.player_id = pi.player_id
-LEFT JOIN Matches mt ON p.player_id = mt.player1_id
-LEFT JOIN Matches mt2 ON p.player_id = mt2.player2_id
+
 
 -- Joining respective tables
 LEFT JOIN Coaches c ON pc.coach_id = c.coach_id

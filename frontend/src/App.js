@@ -24,6 +24,8 @@ import Sports_Federations from "./components/Sports_Federation/Sports_Federation
 import { Logo } from "./Logo";
 import CoachPlayer from "./components/CoachPlayer/CoachPlayer";
 
+import PlayerInstitute from "./components/PlayerInstitute/PlayerInstitute";
+
 function App() {
   return (
     <>
@@ -75,6 +77,7 @@ const RoutesWeb = () => {
         <Route path="/relation/playerdoctor" element={<PlayerDoctor />} />
         <Route path="/relation/matches" element={<Matches />} />
         <Route path="/relation/playercoach" element={<CoachPlayer />} />
+        <Route path="/relation/playerinstitute" element={<PlayerInstitute />} />
 
         <Route path="/test" element={<SearchPlayerId />} />
         <Route path="/test2" element={<SearchDoctorId />} />
