@@ -1145,7 +1145,47 @@ app.post("/PlayerDoctor", (req, res) => {
       .json({ message: "Referee added successfully", data });
   });
 });
+app.get("/players/:playerId/coaches/:coachId", (req, res) => {
+  const player_id = parseInt(req.params.playerId, 10); // Ensure ID is a number
+  const coach_id = parseInt(req.params.coachId, 10); // Ensure ID is a number
 
+  let sql;
+  let queryParams = [];
+
+  if (coach_id !== 0 && player_id === 0) {
+    sql = `SELECT p.player_id, p.first_name AS p_f_name, p.last_name as p_l_name, p.sport, p.age, c.coach_id, c.first_name, c.last_name, c.experience
+        FROM PlayerView p
+        JOIN Player_Coach pc ON p.player_id = pc.player_id
+        JOIN Coaches c ON pc.coach_id = c.coach_id
+        WHERE c.coach_id=?;`;
+    queryParams = [coach_id];
+  } else if (player_id !== 0 && coach_id === 0) {
+    sql = `SELECT p.player_id, p.first_name AS p_f_name, p.last_name as p_l_name, p.sport, p.age, c.coach_id, c.first_name, c.last_name, c.experience
+        FROM PlayerView p
+        JOIN Player_Coach pc ON p.player_id = pc.player_id
+        JOIN Coaches c ON pc.coach_id = c.coach_id
+        WHERE p.player_id=?;`;
+    queryParams = [player_id];
+  } else {
+    sql = `SELECT p.player_id, p.first_name AS p_f_name, p.last_name as p_l_name, p.sport, p.age, c.coach_id, c.first_name, c.last_name, c.experience
+        FROM PlayerView p
+        JOIN Player_Coach pc ON p.player_id = pc.player_id
+        JOIN Coaches c ON pc.coach_id = c.coach_id;`;
+  }
+
+  db.query(sql, queryParams, (err, data) => {
+    if (err) {
+      console.error("Error fetching player-coach data:", err.message);
+      return res.status(500).json({ error: "Failed to fetch player-coach data" });
+    }
+
+    if (data.length === 0) {
+      return res.status(404).json({ error: "No matching records found" });
+    }
+
+    return res.status(200).json(data);
+  });
+});
 //route to get player count
 app.get("/players/count", async (req, res) => {
   const sql = "SELECT COUNT(*) AS count FROM Players";
@@ -1174,7 +1214,104 @@ app.get("/media_broadcasters/count", async (req, res) => {
   db.query(sql, (err, data) => {
     if (err) {
       console.error("Error fetching media broadcasters count:", err.message);
-      return res.status(500).json({ error: "Failed to fetch media broadcasters count" });
+      return res
+        .status(500)
+        .json({ error: "Failed to fetch media broadcasters count" });
+    }
+    return res.status(200).json(data);
+  });
+});
+
+// Route to get all data for player
+app.get("/playerdata", async (req, res) => {
+  //   const sql =
+
+  // SELECT
+  // p.player_id,
+  // p.first_name AS p_f_name,
+  // p.last_name AS p_l_name,
+  // p.date_of_birth AS p_dob,
+  // p.sport AS p_sport,
+  // c.coach_id,
+  // c.first_name AS c_f_name,
+  // c.last_name AS c_l_name,
+  // c.experience AS c_experience,
+  // c.sport AS c_sport,
+  // f.fan_id,
+  // f.first_name AS f_f_name,
+  // f.last_name AS f_l_name,
+  // m.manager_id,
+  // m.first_name AS m_f_name,
+  // m.last_name AS m_l_name,
+  // i.institute_id,
+  // i.institute_name AS i_name,
+  // i.city AS i_city,
+  // i.ranking AS i_rank,
+  // i.sports_type AS i_sports_type,
+  // i.established_year AS i_year,
+
+  // FROM Players p
+  // LEFT JOIN Player_Coach pc ON p.player_id = pc.player_id
+  // LEFT JOIN Player_Fan pf ON p.player_id = pf.player_id
+  // LEFT JOIN Player_Manager pm ON p.player_id = pm.player_id
+  // LEFT JOIN Player_Institute pi ON p.player_id = pi.player_id
+  // LEFT JOIN Matches mt ON p.player_id = mt.player1_id
+  // LEFT JOIN Matches mt2 ON p.player_id = mt2.player2_id
+
+  // -- Joining respective tables
+  // LEFT JOIN Coaches c ON pc.coach_id = c.coach_id
+  // LEFT JOIN Fans f ON pf.fan_id = f.fan_id
+  // LEFT JOIN Managers m ON pm.manager_id = m.manager_id
+  // LEFT JOIN Institutes i ON pi.institute_id = i.institute_id
+
+  // WHERE p.player_id = 5;
+  // SELECT p.*, f.*, m.*, i.*, mt.*
+  const sql = `
+  SELECT
+    p.player_id,
+    p.first_name AS p_f_name,
+    p.last_name AS p_l_name,
+    p.date_of_birth AS p_dob,
+    p.sport AS p_sport,
+    c.coach_id,
+    c.first_name AS c_f_name,
+    c.last_name AS c_l_name,
+    c.experience AS c_experience,
+    c.sport AS c_sport,
+    f.fan_id,
+    f.first_name AS f_f_name,
+    f.last_name AS f_l_name,
+    m.manager_id,
+    m.first_name AS m_f_name,
+    m.last_name AS m_l_name,
+    i.institute_id,
+    i.institute_name AS i_name,
+    i.city AS i_city,
+    i.ranking AS i_rank,
+    i.sports_type AS i_sports_type,
+    i.established_year AS i_year
+
+FROM Players p
+LEFT JOIN Player_Coach pc ON p.player_id = pc.player_id
+LEFT JOIN Player_Fan pf ON p.player_id = pf.player_id
+LEFT JOIN Player_Manager pm ON p.player_id = pm.player_id
+LEFT JOIN Player_Institute pi ON p.player_id = pi.player_id
+LEFT JOIN Matches mt ON p.player_id = mt.player1_id
+LEFT JOIN Matches mt2 ON p.player_id = mt2.player2_id
+
+-- Joining respective tables
+LEFT JOIN Coaches c ON pc.coach_id = c.coach_id
+LEFT JOIN Fans f ON pf.fan_id = f.fan_id
+LEFT JOIN Managers m ON pm.manager_id = m.manager_id
+LEFT JOIN Institutes i ON pi.institute_id = i.institute_id
+
+WHERE p.player_id = 5;
+`;
+
+  db.query(sql, (err, data) => {
+    if (err) {
+      console.error("Error fetching player data:", err.message);
+      return res.status(500).json({ error: "Failed to fetch player data" });
     }
     return res.status(200).json(data);
   });

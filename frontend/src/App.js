@@ -22,6 +22,7 @@ import Sponsors from "./components/Sponsors/Sponsors";
 import Sports_Facilities from "./components/Sports_Facilities/Sports_Facilities";
 import Sports_Federations from "./components/Sports_Federation/Sports_Federations";
 import { Logo } from "./Logo";
+import CoachPlayer from "./components/CoachPlayer/CoachPlayer";
 
 function App() {
   return (
@@ -73,6 +74,7 @@ const RoutesWeb = () => {
 
         <Route path="/relation/playerdoctor" element={<PlayerDoctor />} />
         <Route path="/relation/matches" element={<Matches />} />
+        <Route path="/relation/playercoach" element={<CoachPlayer />} />
 
         <Route path="/test" element={<SearchPlayerId />} />
         <Route path="/test2" element={<SearchDoctorId />} />
