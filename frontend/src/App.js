@@ -26,6 +26,8 @@ import CoachPlayer from "./components/CoachPlayer/CoachPlayer";
 
 import PlayerInstitute from "./components/PlayerInstitute/PlayerInstitute";
 import PlayerDashboard from "./components/PlayerDashboard/PlayerDashboard";
+import Dashboard from "./components/PlayerDashboard/PlayerDashboard";
+import Dashboard1 from "./components/PlayerDashboard/PlayerDashboard copy";
 
 function App() {
   return (
@@ -80,7 +82,8 @@ const RoutesWeb = () => {
         <Route path="/relation/playercoach" element={<CoachPlayer />} />
         <Route path="/relation/playerinstitute" element={<PlayerInstitute />} />
 
-        <Route path="/playerdashboard" element={<PlayerDashboard />} />
+        <Route path="/playerdashboard" element={<Dashboard1 />} />
+        <Route path="/test4" element={<Dashboard1 />} />
 
         <Route path="/test" element={<SearchPlayerId />} />
         <Route path="/test2" element={<SearchDoctorId />} />
