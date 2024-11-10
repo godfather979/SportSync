@@ -233,7 +233,7 @@ export function HomePage() {
                 Add Athlete
               </button>
               <button className="btn btn-primary btn-outline text-2xl">
-                Create Team
+                View Player profile
               </button>
               <button
                 className="btn btn-primary btn-outline text-2xl"

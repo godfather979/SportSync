@@ -25,6 +25,7 @@ import { Logo } from "./Logo";
 import CoachPlayer from "./components/CoachPlayer/CoachPlayer";
 
 import PlayerInstitute from "./components/PlayerInstitute/PlayerInstitute";
+import PlayerDashboard from "./components/PlayerDashboard/PlayerDashboard";
 
 function App() {
   return (
@@ -45,7 +46,7 @@ const RoutesWeb = () => {
 
   return (
     <>
-      <Logo />
+      {/* <Logo /> */}
       {isTableRoute && <SearchTable />}
       {isRelationRoute && <SearchRelation />}
       <Routes>
@@ -78,6 +79,8 @@ const RoutesWeb = () => {
         <Route path="/relation/matches" element={<Matches />} />
         <Route path="/relation/playercoach" element={<CoachPlayer />} />
         <Route path="/relation/playerinstitute" element={<PlayerInstitute />} />
+
+        <Route path="/playerdashboard" element={<PlayerDashboard />} />
 
         <Route path="/test" element={<SearchPlayerId />} />
         <Route path="/test2" element={<SearchDoctorId />} />

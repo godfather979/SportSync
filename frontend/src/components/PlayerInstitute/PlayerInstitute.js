@@ -118,7 +118,7 @@ function PlayerInstitute() {
                     </th>
 
                     <th className="text-primary font-semibold px-4 py-3">
-                      Coach Name
+                      Sport 
                     </th>
                     <th className="text-primary font-semibold px-4 py-3">
                       Experience
